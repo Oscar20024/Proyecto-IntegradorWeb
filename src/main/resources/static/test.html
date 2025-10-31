@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Material Symbols</title>
+
+  <!-- Enlace a Google Fonts (Material Symbols) -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24;
+      font-size: 48px;   /* tamaño grande para comprobar */
+      color: brown;      /* color distinto para que se note */
+    }
+  </style>
+  
+</head>
+<body>
+  <h2>Test de Material Symbols</h2>
+
+  <p>Si ves un 🔔 campanita aquí, funciona:</p>
+  <span class="material-symbols-outlined">notifications</span>
+
+  <p>Si ves un 🛒 carrito aquí, también funciona:</p>
+  <span class="material-symbols-outlined">shopping_cart</span>
+
+  <p>Si en lugar de íconos ves palabras ("notifications", "shopping_cart"), entonces el <code>&lt;link&gt;</code> NO está cargando.</p>
+</body>
+</html>

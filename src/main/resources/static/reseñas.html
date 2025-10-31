@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Artia Pastelería - Reseñas</title>
+
+  <!-- CSS base primero -->
+  <link rel="stylesheet" href="/css/inicio.css"/>
+  <!-- CSS específico después (usa /css/resenas.css si tu servidor no acepta ñ) -->
+  <link rel="stylesheet" href="/css/reseñas.css"/>
+
+  <!-- Material Symbols para iconografía del header -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <!-- Font Awesome para estrellas de rating -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;700&family=Dancing+Script:wght@700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --color-primario:#d17a29;--color-secundario:#f8e4cb;--color-texto:#78481e;--color-blanco:#fff;
+      --color-borde-azul:#61b3e8;--color-fondo-formulario-box:#e4d1c0;--color-btn-enviar:#a87955;
+      --fuente-principal:'Montserrat',sans-serif;
+    }
+    .reseña-card{position:relative}
+    .reseña-actions{position:absolute;top:15px;right:15px;display:none;z-index:20}
+    .reseña-card.editable:hover .reseña-actions{display:block}
+    .action-btn{background:none;border:none;color:var(--color-texto);cursor:pointer;font-size:1.2rem;margin-left:8px;opacity:.6;transition:opacity .3s,color .3s;padding:5px}
+    .action-btn:hover{opacity:1;color:var(--color-primario)}
+    .rating-editor{margin-top:5px;margin-bottom:15px;display:inline-block}
+    .rating-editor i{cursor:pointer;color:#d3d3d3;font-size:1.4rem;margin-right:2px}
+    .rating-editor i.filled{color:#e6b800}
+    .reseña-card.editing textarea{width:100%;border:1px solid var(--color-borde-azul);padding:8px;margin-top:10px;box-sizing:border-box;font-family:var(--fuente-principal);resize:vertical}
+    .reseña-card.editing .rating-editor{margin-top:15px}
+    .reseña-card.editing .comentario{display:none}
+    .reseña-card .comentario-editor{display:none}
+    .reseña-card.editing .comentario-editor{display:block}
+  </style>
+</head>
+<body class="page-resenas">
+
+<header>
+  <div class="header-top">
+    <a href="/inicio.html" class="logo"><img src="/img/logo.png" alt="Artia Logo"/></a>
+
+    <div class="search-container">
+      <span class="material-symbols-outlined" aria-hidden="true">search</span>
+      <input type="text" placeholder="¿Qué comemos hoy...?" aria-label="Buscar"/>
+    </div>
+
+    <div class="header-icons">
+      <button class="icon-btn" aria-label="Notificaciones">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+
+      <div class="user-wrap">
+        <button id="userBtn" class="icon-btn" aria-label="Perfil">
+          <span class="material-symbols-outlined">account_circle</span>
+        </button>
+        <div id="userMenu" class="user-menu" hidden>
+          <div class="user-menu-header"><span id="userName">Invitado</span></div>
+          <a href="/login.html" id="loginLink">Iniciar sesión</a>
+          <a href="/registro.html" id="registerLink">Crear cuenta</a>
+          <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <a href="/carrito.html" aria-label="Carrito" class="icon-btn">
+        <span class="material-symbols-outlined">shopping_cart</span>
+      </a>
+
+      <button class="icon-btn hamburger-btn" id="hamburgerBtn" aria-label="Menú">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav" id="mainNav">
+  <ul>
+      <li><a href="/inicio.html">Inicio</a></li>
+      <li><a href="/nosotros.html">Nosotros</a></li>
+      <li><a href="/catalogo.html">Catalogo</a></li>
+    <li><a href="/eventos.html">Eventos</a></li>
+    <li><a href="/contacto.html">Contacto</a></li>
+    <li><a href="/reseñas.html" class="active">Reseñas</a></li>
+    <li><a href="/foro.html">Foro</a></li>
+    <li><a href="/puntos.html">Puntos</a></li>
+  </ul>
+</nav>
+
+<main class="main-reseñas" id="reseñas">
+  <section class="reseñas-banner">
+    <div class="banner-content">
+      <h1>COMENTARIOS Y RESEÑAS</h1>
+    </div>
+  </section>
+
+  <section class="reseñas-clientes">
+    <h2>Lo que dicen nuestros clientes...</h2>
+
+    <div class="reseñas-container-wrapper">
+      <div class="circles-bg-reseñas">
+        <span class="circle c-size-large c-color-crema c-offset-tl-1"></span>
+        <span class="circle c-size-medium c-color-naranja c-offset-tr-1"></span>
+        <span class="circle c-size-small c-color-crema c-offset-bl-1"></span>
+        <span class="circle c-size-large c-color-naranja c-offset-br-1"></span>
+        <span class="circle c-size-medium c-color-crema c-offset-cr-1"></span>
+      </div>
+
+      <div class="reseñas-grid" id="reseñasGrid">
+        <div class="reseña-card borde-azul" data-id="1">
+          <div class="perfil"><i class="fas fa-user-circle"></i><span class="nombre">Michelle H.</span></div>
+          <div class="rating" data-rating="5">
+            <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
+          </div>
+          <p class="comentario">Definitivamente la mejor cafetería de Ica, todo muy agradable y el ambiente muy aestetick, de todas maneras vuelvoooo</p>
+          <div class="reseña-actions">
+            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete-btn" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+          </div>
+        </div>
+
+        <div class="reseña-card" data-id="2">
+          <div class="perfil"><i class="fas fa-user-circle"></i><span class="nombre">José José</span></div>
+          <div class="rating" data-rating="4">
+            <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star"></i>
+          </div>
+          <p class="comentario">Tan bueno, que baje solo para probarlo, y me regresó por lo rico que estaba Otro día les vuelvo a caer...</p>
+          <div class="reseña-actions">
+            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete-btn" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+          </div>
+        </div>
+
+        <div class="reseña-card" data-id="3">
+          <div class="perfil"><i class="fas fa-user-circle"></i><span class="nombre">Taylor Swift</span></div>
+          <div class="rating" data-rating="5">
+            <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
+          </div>
+          <p class="comentario">Deliciosoo todo, el café, los postres y además hacen pedidos para eventos... Obviamente los contrataré para mi boda muchas gracias @Artia</p>
+          <div class="reseña-actions">
+            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete-btn" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reseñas-formulario">
+    <h2>También queremos saber tu opinión...</h2>
+
+    <div class="formulario-wrapper">
+      <div class="circles-bg-formulario">
+        <span class="circle c-size-medium c-color-naranja c-offset-f-1"></span>
+        <span class="circle c-size-large c-color-crema c-offset-f-2"></span>
+        <span class="circle c-size-medium c-color-naranja c-offset-f-3"></span>
+        <span class="circle c-size-large c-color-crema c-offset-f-4"></span>
+      </div>
+
+      <div id="formContainerWrapper" class="formulario-container">
+        <form id="reviewForm" novalidate>
+          <input type="text" id="reviewName" name="nombre" placeholder="Nombre (o alias)" required/>
+          <input type="email" name="email" placeholder="Correo Electrónico" required/>
+          <textarea id="reviewComment" name="comentario" rows="4" placeholder="Tu comentario . . ." required></textarea>
+
+          <div class="rating-editor new-review-rating" data-rating="5">
+            <i class="fas fa-star filled" data-value="1"></i>
+            <i class="fas fa-star filled" data-value="2"></i>
+            <i class="fas fa-star filled" data-value="3"></i>
+            <i class="fas fa-star filled" data-value="4"></i>
+            <i class="fas fa-star filled" data-value="5"></i>
+          </div>
+
+          <button type="submit" class="btn-enviar">ENVIAR</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-col">
+      <h4>ESCRÍBENOS</h4>
+      <p>+51 222 222 222</p>
+      <p>artiapasteleria.com</p>
+      <div class="social-icons">
+        <a href="#" aria-label="Web"><span class="material-symbols-outlined">public</span></a>
+        <a href="#" aria-label="Instagram"><span class="material-symbols-outlined">photo_camera</span></a>
+        <a href="#" aria-label="Compartir"><span class="material-symbols-outlined">share</span></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>INFORMACIÓN</h4>
+      <a href="#">Términos y condiciones</a>
+      <a href="#">Políticas de Privacidad</a>
+      <a href="#">Libro de Reclamaciones</a>
+    </div>
+    <div class="footer-col footer-logo">
+      <img src="/img/logo2.png" alt="Logo Artia Footer"/>
+    </div>
+  </div>
+</footer>
+
+<div class="floating-buttons">
+  <a href="#" aria-label="WhatsApp"><img src="/img/whatsApp.jpg" alt="WhatsApp"/></a>
+  <a href="#" aria-label="Chat"><img src="/img/chatbot.png" alt="Chat"/></a>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // ======= SESIÓN / MENÚ USUARIO (misma lógica del sitio) =======
+  const token = localStorage.getItem('token');
+  const user  = localStorage.getItem('user');
+  const isLoggedIn = Boolean(token);
+
+  const userBtn = document.getElementById('userBtn');
+  const userMenu = document.getElementById('userMenu');
+  const userName = document.getElementById('userName');
+  const loginLink = document.getElementById('loginLink');
+  const registerLink = document.getElementById('registerLink');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  if (isLoggedIn && user) {
+    if (userName) userName.textContent = user;
+    if (loginLink) loginLink.hidden = true;
+    if (registerLink) registerLink.hidden = true;
+    if (logoutBtn) logoutBtn.hidden = false;
+  } else {
+    if (logoutBtn) logoutBtn.hidden = true;
+  }
+
+  if (userBtn && userMenu) {
+    userBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.toggleAttribute('hidden');
+    });
+    document.addEventListener('click', () => userMenu.setAttribute('hidden', ''));
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.clear();
+      location.href = '/login.html';
+    });
+  }
+
+  // fetch autenticado común
+  window.authFetch = (url, opt = {}) => {
+    const t = localStorage.getItem('token');
+    const headers = { ...(opt.headers || {}) };
+    if (t) headers.Authorization = 'Bearer ' + t;
+    return fetch(url, { ...opt, headers });
+  };
+
+  // ======= NAV activo (visual) + hamburguesa =======
+  const navLinks = document.querySelectorAll('.main-nav a');
+  navLinks.forEach(a => a.addEventListener('click', function () {
+    navLinks.forEach(n => n.classList.remove('active'));
+    this.classList.add('active');
+  }));
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mainNav = document.getElementById('mainNav');
+  if (hamburgerBtn && mainNav) {
+    hamburgerBtn.addEventListener('click', () => mainNav.classList.toggle('show'));
+  }
+
+  // ======= RATING helpers =======
+  const newReviewRatingContainer = document.querySelector('.new-review-rating');
+  const reseñasGrid = document.getElementById('reseñasGrid');
+  const reviewForm = document.getElementById('reviewForm');
+
+  function generateStarsHtml(rating) {
+    let html = '';
+    for (let i = 1; i <= 5; i++) {
+      const cls = i <= rating ? 'filled' : '';
+      html += `<i class="fas fa-star ${cls}" data-value="${i}"></i>`;
+    }
+    return html;
+  }
+
+  function renderStars(container, currentRating) {
+    container.innerHTML = generateStarsHtml(currentRating);
+    container.setAttribute('data-rating', currentRating);
+    if (container.classList.contains('rating-editor')) {
+      container.querySelectorAll('.fas.fa-star').forEach(star => {
+        star.addEventListener('click', function () {
+          const newRating = parseInt(this.getAttribute('data-value'));
+          renderStars(container, newRating);
+        });
+      });
+    }
+  }
+
+  // ======= CRUD reseñas =======
+  function toggleReviewFeatures(enabled) {
+    // agrega/quita la clase 'editable' para mostrar acciones al pasar el mouse
+    document.querySelectorAll('.reseña-card').forEach(card => {
+      card.classList.toggle('editable', enabled);
+    });
+  }
+  toggleReviewFeatures(isLoggedIn);
+
+  function attachReviewListeners(card) {
+    card.querySelector('.delete-btn').addEventListener('click', () => {
+      if (!localStorage.getItem('token')) return alert('Debes iniciar sesión para eliminar.');
+      if (confirm('¿Eliminar este comentario?')) card.remove();
+    });
+    card.querySelector('.edit-btn').addEventListener('click', () => editReview(card));
+  }
+
+  function editReview(card) {
+    if (!localStorage.getItem('token')) return alert('Debes iniciar sesión para editar.');
+    const isEditing = card.classList.contains('editing');
+    const editBtn = card.querySelector('.edit-btn i');
+
+    if (isEditing) {
+      const textarea = card.querySelector('textarea');
+      const newComment = textarea.value.trim();
+      const newRating = parseInt(card.querySelector('.rating-editor').getAttribute('data-rating'));
+      if (!newComment) return alert('El comentario no puede estar vacío.');
+
+      const p = document.createElement('p');
+      p.className = 'comentario';
+      p.textContent = newComment;
+      textarea.replaceWith(p);
+
+      const ratingVisual = document.createElement('div');
+      ratingVisual.className = 'rating';
+      ratingVisual.setAttribute('data-rating', newRating);
+      ratingVisual.innerHTML = generateStarsHtml(newRating);
+      card.querySelector('.rating-editor').replaceWith(ratingVisual);
+
+      card.classList.remove('editing');
+      editBtn.className = 'fas fa-edit';
+      alert('Comentario actualizado.');
+    } else {
+      const currentComment = card.querySelector('.comentario').textContent;
+      const currentRating = parseInt(card.querySelector('.rating').getAttribute('data-rating'));
+
+      const textarea = document.createElement('textarea');
+      textarea.value = currentComment;
+      textarea.className = 'comentario-editor';
+      card.querySelector('.comentario').replaceWith(textarea);
+
+      const ratingContainer = card.querySelector('.rating');
+      const editor = document.createElement('div');
+      editor.className = 'rating-editor';
+      ratingContainer.replaceWith(editor);
+      renderStars(editor, currentRating);
+
+      card.classList.add('editing');
+      editBtn.className = 'fas fa-save';
+    }
+  }
+
+  // listeners iniciales de las tarjetas existentes
+  document.querySelectorAll('.reseñas-grid .reseña-card').forEach(attachReviewListeners);
+
+  // inicializar estrellas del formulario
+  renderStars(newReviewRatingContainer, 5);
+
+  // alta de nueva reseña
+  reviewForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!localStorage.getItem('token')) {
+      alert('Debes iniciar sesión para publicar un comentario.');
+      location.href = '/login.html';
+      return;
+    }
+
+    const name = document.getElementById('reviewName').value.trim();
+    const comment = document.getElementById('reviewComment').value.trim();
+    const rating = parseInt(newReviewRatingContainer.getAttribute('data-rating'));
+    if (!name || !comment) return alert('Completa nombre y comentario.');
+
+    const card = document.createElement('div');
+    card.className = 'reseña-card borde-azul editable';
+    card.setAttribute('data-id', Date.now().toString());
+    card.innerHTML = `
+      <div class="perfil"><i class="fas fa-user-circle"></i><span class="nombre">${name}</span></div>
+      <div class="rating" data-rating="${rating}">${generateStarsHtml(rating)}</div>
+      <p class="comentario">${comment}</p>
+      <div class="reseña-actions">
+        <button class="action-btn edit-btn" title="Editar"><i class="fas fa-edit"></i></button>
+        <button class="action-btn delete-btn" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+      </div>`;
+    reseñasGrid.prepend(card);
+    attachReviewListeners(card);
+
+    reviewForm.reset();
+    renderStars(newReviewRatingContainer, 5);
+    alert('¡Gracias! Tu reseña se añadió.');
+  });
+});
+</script>
+</body>
+</html>

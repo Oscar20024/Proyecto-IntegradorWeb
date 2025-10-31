@@ -1,0 +1,486 @@
+/* ========================================================= */
+/* ========== 1. VARIABLES Y BASE (SEGURO/NO INVADE) ======= */
+/* ========================================================= */
+:root { 
+  --color-primario: #d17a29;
+  --color-secundario: #f8e4cb;
+  --color-texto: #78481e;
+  --color-blanco: #ffffff;
+  --color-fondo-festoneado: #b8a296;
+  --fuente-principal: 'Montserrat', sans-serif; 
+  --fuente-especial: 'Dancing Script', cursive; 
+  --fuente-titulos-historia: 'Cormorant Garamond', serif;
+}
+
+/* Base SOLO para esta página */
+.page-eventos {
+  margin: 0;
+  font-family: var(--fuente-principal);
+  background-color: #fff;
+  color: var(--color-texto);
+}
+
+.page-eventos #eventos {
+  padding: 0 2rem;
+  overflow-x: hidden;
+}
+
+/* Títulos de sección */
+.page-eventos #eventos .section-title {
+  font-family: var(--fuente-titulos-historia); 
+  font-size: 4rem; 
+  font-weight: 400; 
+  letter-spacing: 0.25em; 
+  color: var(--color-texto);
+  text-align: center;
+  margin: 6rem 0 4rem 0; 
+  text-transform: uppercase;
+}
+
+/* Título principal del formulario */
+.page-eventos #eventos .solicita-evento-section .section-title {
+  font-size: 3.5rem; 
+  font-weight: 400; 
+  letter-spacing: 0.2em; 
+  margin: 6rem 0 4rem 0;
+}
+
+/* ========================================================= */
+/* ============== 2. (NO ESTILAR HEADER/NAV) =============== */
+/* ========================================================= */
+/* Intencionalmente vacío: header, .header-top, .main-nav, .icon-btn, footer
+   se controlan desde /css/inicio.css. */
+
+/* ========================================================= */
+/* ==================== 3. SECCIÓN HERO ==================== */
+/* ========================================================= */
+.page-eventos #eventos .hero-eventos-section {
+  padding-top: 5rem;
+  padding-bottom: 0; 
+  overflow: hidden; 
+}
+
+.page-eventos #eventos .eventos-titulo-deco {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.page-eventos #eventos .eventos-title {
+  font-family: var(--fuente-titulos-historia);
+  font-size: 3.5rem;
+  font-weight: 300;
+  letter-spacing: 0.4em;
+  color: var(--color-texto);
+  margin: 0;
+}
+
+.page-eventos #eventos .eventos-deco-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.page-eventos #eventos .hero-fondo-festoneado {
+  background-color: var(--color-fondo-festoneado);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 30px), 98% 90%, 96% calc(100% - 30px), 94% 90%, 92% calc(100% - 30px), 90% 90%, 88% calc(100% - 30px), 86% 90%, 84% calc(100% - 30px), 82% 90%, 80% calc(100% - 30px), 78% 90%, 76% calc(100% - 30px), 74% 90%, 72% calc(100% - 30px), 70% 90%, 68% calc(100% - 30px), 66% 90%, 64% calc(100% - 30px), 62% 90%, 60% calc(100% - 30px), 58% 90%, 56% calc(100% - 30px), 54% 90%, 52% calc(100% - 30px), 50% 90%, 48% calc(100% - 30px), 46% 90%, 44% calc(100% - 30px), 42% 90%, 40% calc(100% - 30px), 38% 90%, 36% calc(100% - 30px), 34% 90%, 32% calc(100% - 30px), 30% 90%, 28% calc(100% - 30px), 26% 90%, 24% calc(100% - 30px), 22% 90%, 20% calc(100% - 30px), 18% 90%, 16% calc(100% - 30px), 14% 90%, 12% calc(100% - 30px), 10% 90%, 8% calc(100% - 30px), 6% 90%, 4% calc(100% - 30px), 2% 90%, 0% calc(100% - 30px));
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 0 5rem 0; 
+  gap: 3rem;
+  position: relative; 
+  min-height: 500px; 
+}
+
+.page-eventos #eventos .hero-media-area {
+  width: 50%;
+  position: absolute; 
+  height: 100%;
+  top: -50px; 
+  left: 0;
+}
+
+.page-eventos #eventos .hero-img-torta {
+  position: absolute;
+  width: 350px; 
+  height: 400px;
+  object-fit: cover;
+  clip-path: ellipse(50% 50% at 50% 50%); 
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  top: 50%; 
+  left: 10%; 
+  transform: translateY(-50%); 
+  z-index: 10;
+}
+
+.page-eventos #eventos .hero-img-bocaditos {
+  position: absolute;
+  width: 300px; 
+  height: 300px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  top: 70%;
+  left: 45%; 
+  transform: translateY(-50%);
+  z-index: 12;
+}
+
+.page-eventos #eventos .hero-text-area {
+  width: 50%;
+  max-width: 550px;
+  margin-left: auto; 
+  padding-right: 5rem;
+  padding-top: 5rem; 
+  color: var(--color-texto); 
+  text-align: center; 
+}
+
+.page-eventos #eventos .hero-text-area h2 {
+  font-family: var(--fuente-titulos-historia);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.page-eventos #eventos .hero-text-area p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* ========================================================= */
+/* ==================== 4. SECCIÓN CATERING ================= */
+/* ========================================================= */
+.page-eventos #eventos .catering-section {
+  padding: 6rem 2rem;
+}
+
+.page-eventos #eventos .catering-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+  gap: 4rem;
+  position: relative; 
+}
+
+.page-eventos #eventos .catering-text-area {
+  width: 45%;
+  max-width: 550px;
+  text-align: left; 
+}
+
+.page-eventos #eventos .catering-text-area .section-title {
+  text-align: left;
+  margin-bottom: 1.5rem;
+  font-size: 3rem; 
+  letter-spacing: 0.2em;
+}
+
+.page-eventos #eventos .catering-intro {
+  font-size: 1.15rem;
+  margin-bottom: 2rem;
+}
+
+.page-eventos #eventos .catering-list {
+  list-style: none;
+  padding: 0;
+  font-size: 1.1rem;
+  line-height: 2;
+}
+
+.page-eventos #eventos .catering-list li::before {
+  content: "•";
+  color: var(--color-primario);
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+  font-size: 1.5rem;
+  vertical-align: top;
+}
+
+.page-eventos #eventos .btn-cotiza-main {
+  display: inline-block; 
+  padding: 1rem 2.5rem;
+  background-color: var(--color-primario); 
+  color: var(--color-blanco);
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-radius: 50px; 
+  transition: background-color 0.3s, box-shadow 0.3s;
+  margin-top: 3rem; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.page-eventos #eventos .catering-media-area {
+  position: relative;
+  width: 50%;
+  height: 600px; 
+}
+
+.page-eventos #eventos .catering-img-circle {
+  position: absolute;
+  object-fit: cover;
+  border-radius: 50%; 
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  border: 5px solid var(--color-blanco); 
+}
+
+.page-eventos #eventos .catering-img-circle.top-right {
+  width: 320px; 
+  height: 420px;
+  top: 0;
+  right: 0;
+  z-index: 20;
+}
+
+.page-eventos #eventos .catering-img-circle.middle {
+  width: 320px; 
+  height: 420px;
+  top: 150px; 
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25; 
+}
+
+.page-eventos #eventos .catering-img-circle.bottom-left {
+  width: 300px; 
+  height: 400px; 
+  top: 250px; 
+  left: 0;
+  z-index: 30; 
+}
+
+/* ========================================================= */
+/* ==================== 5. SECCIÓN FORMULARIO =============== */
+/* ========================================================= */
+.page-eventos #eventos .solicita-evento-section {
+  padding: 6rem 2rem;
+  background-color: var(--color-secundario); 
+}
+
+.page-eventos #eventos .form-card {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem;
+  background-color: var(--color-blanco);
+  border-radius: 10px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+}
+
+.page-eventos #eventos .form-description {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  color: #555;
+  font-size: 1.1rem;
+}
+
+.page-eventos #eventos .solicita-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.page-eventos #eventos .form-group-row {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.page-eventos #eventos .form-field {
+  flex: 1 1 48%; 
+  display: flex;
+  flex-direction: column;
+}
+
+.page-eventos #eventos .form-field.full-width {
+  flex: 1 1 100%;
+}
+
+.page-eventos #eventos .form-field label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--color-texto);
+}
+
+.page-eventos #eventos .solicita-form input,
+.page-eventos #eventos .solicita-form select,
+.page-eventos #eventos .solicita-form textarea {
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-family: var(--fuente-principal);
+  color: #333;
+}
+
+/* Select decorado (icono flecha) */
+.page-eventos #eventos .solicita-form select {
+  -webkit-appearance: none;
+  -moz-appearance: none;    
+  appearance: none;         
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2378481e%22%20d%3D%22M287%20197.8L151.2%2062.1c-3.7-3.7-9.8-3.7-13.5%200L5.4%20197.8c-3.7%203.7-3.7%209.8%200%2013.5l22.6%2022.6c3.7%203.7%209.8%203.7%2013.5%200l94.8-94.8%2094.8%2094.8c3.7%203.7%209.8%203.7%2013.5%200l22.6-22.6c3.7-3.8%203.7-9.8%200-13.5z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  padding-right: 2.5rem; 
+}
+
+/* Placeholders */
+.page-eventos #eventos .solicita-form input::placeholder,
+.page-eventos #eventos .solicita-form textarea::placeholder {
+  color: #aaa;
+}
+
+.page-eventos #eventos .btn-submit-form {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 2rem;
+  background-color: var(--color-primario);
+  color: var(--color-blanco);
+  border-radius: 5px;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.page-eventos #eventos .btn-submit-form:hover {
+  background-color: #a8621f;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ========================================================= */
+/* ============== 6. FLOTANTES (WhatsApp/Chat) ============== */
+/* ========================================================= */
+.page-eventos .floating-buttons {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 999;
+}
+
+.page-eventos .floating-buttons a img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2); 
+}
+
+/* ========================================================= */
+/* =================== 7. RESPONSIVE SOLO UI ================= */
+/* ========================================================= */
+
+/* >= tablets */
+@media (max-width: 992px) {
+  /* Títulos */
+  .page-eventos #eventos .eventos-title {
+    font-size: 2.5rem; 
+    letter-spacing: 0.15em;
+  }
+  .page-eventos #eventos .solicita-evento-section .section-title { 
+    font-size: 2.5rem; 
+    margin: 3rem 0 1.5rem 0;
+    letter-spacing: 0.15em;
+  }
+
+  /* Hero */
+  .page-eventos #eventos .hero-fondo-festoneado {
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1rem 4rem 1rem;
+    min-height: auto;
+  }
+  .page-eventos #eventos .hero-media-area {
+    position: static;
+    width: 100%;
+    height: 350px; 
+    top: auto; 
+    left: auto;
+    transform: none;
+    max-width: 450px;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+  }
+  .page-eventos #eventos .hero-img-torta,
+  .page-eventos #eventos .hero-img-bocaditos {
+    position: static;
+    width: 150px; 
+    height: 150px;
+    display: inline-block;
+    margin: 1rem;
+    transform: none;
+  }
+  .page-eventos #eventos .hero-text-area {
+    width: 90%;
+    padding-top: 1rem;
+    text-align: center;
+    padding-right: 0;
+    margin: 0 auto;
+  }
+  .page-eventos #eventos .hero-text-area h2 { font-size: 2rem; }
+
+  /* Catering */
+  .page-eventos #eventos .catering-container { 
+    flex-direction: column; 
+    align-items: center; 
+  }
+  .page-eventos #eventos .catering-text-area { 
+    width: 90%; 
+    text-align: center; 
+  }
+  .page-eventos #eventos .catering-text-area .section-title { 
+    text-align: center; 
+  }
+  .page-eventos #eventos .catering-list { 
+    text-align: left; 
+    margin: 0 auto; 
+    max-width: 350px; 
+  }
+  .page-eventos #eventos .btn-cotiza-main { 
+    margin: 2rem auto 0 auto; 
+    display: block; 
+    width: fit-content; 
+  }
+  .page-eventos #eventos .catering-media-area { 
+    height: 450px; 
+    width: 90%; 
+    max-width: 500px; 
+  }
+  .page-eventos #eventos .catering-img-circle.top-right { width: 250px; height: 350px; }
+  .page-eventos #eventos .catering-img-circle.middle { width: 200px; height: 200px; top: 100px; }
+  .page-eventos #eventos .catering-img-circle.bottom-left { width: 200px; height: 300px; top: 200px; }
+
+  /* Formulario */
+  .page-eventos #eventos .form-group-row { 
+    flex-direction: column; 
+    gap: 1rem; 
+  }
+}
+
+/* móviles */
+@media (max-width: 768px) { 
+  .page-eventos #eventos { padding: 0 1rem; }
+
+  /* Ajuste de imágenes de Catering para pantallas muy pequeñas */
+  .page-eventos #eventos .catering-media-area { height: 350px; }
+  .page-eventos #eventos .catering-img-circle.top-right { width: 200px; height: 280px; }
+  .page-eventos #eventos .catering-img-circle.middle { width: 150px; height: 150px; top: 70px; }
+  .page-eventos #eventos .catering-img-circle.bottom-left { width: 180px; height: 250px; top: 150px; }
+}
+

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Artia Pastelería - Contacto</title>
+
+  <link rel="stylesheet" href="/css/inicio.css"/>
+  <link rel="stylesheet" href="/css/contacto.css"/>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+</head>
+<body class="page-contacto">
+
+    
+<header>
+  <div class="header-top">
+    <a href="/inicio.html" class="logo"><img src="/img/logo.png" alt="Artia Logo"/></a>
+    <div class="search-container">
+      <span class="material-symbols-outlined" aria-hidden="true">search</span>
+      <input type="text" placeholder="¿Qué comemos hoy...?" aria-label="Buscar"/>
+    </div>
+    <div class="header-icons">
+      <button class="icon-btn" aria-label="Notificaciones">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      <div class="user-wrap">
+        <button id="userBtn" class="icon-btn" aria-label="Perfil">
+          <span class="material-symbols-outlined">account_circle</span>
+        </button>
+        <div id="userMenu" class="user-menu" hidden>
+          <div class="user-menu-header"><span id="userName">Invitado</span></div>
+          <a href="/login.html" id="loginLink">Iniciar sesión</a>
+          <a href="/registro.html" id="registerLink">Crear cuenta</a>
+          <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
+        </div>
+      </div>
+      <a href="/carrito.html" aria-label="Carrito" class="icon-btn">
+        <span class="material-symbols-outlined">shopping_cart</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav" id="mainNav">
+  <ul>
+    <li><a href="/inicio.html">Inicio</a></li>
+    <li><a href="/nosotros.html">Nosotros</a></li>
+    <li><a href="/catalogo.html">Catálogo</a></li>
+    <li><a href="/eventos.html">Eventos</a></li>
+    <li><a href="/contacto.html" class="active">Contacto</a></li>
+    <li><a href="/reseñas.html">Reseñas</a></li>
+    <li><a href="/foro.html">Foro</a></li>
+    <li><a href="/puntos.html">Puntos</a></li>
+  </ul>
+</nav>
+
+<main class="contacto-main" id="contacto">
+  <section class="contacto-section">
+    <div class="formulario-container">
+      <h2 class="titulo-contacto">CONTÁCTANOS</h2>
+
+      <form class="contact-form" id="contactForm" novalidate>
+        <div class="form-group-grid">
+          <div class="input-wrapper">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" required/>
+          </div>
+          <div class="input-wrapper">
+            <label for="telefono">Teléfono</label>
+            <input type="tel" id="telefono" name="telefono"/>
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="input-wrapper">
+            <label for="email">Correo Electrónico</label>
+            <input type="email" id="email" name="email"/>
+          </div>
+        </div>
+
+        <div class="input-wrapper-full">
+          <label for="mensaje">Mensaje</label>
+          <textarea id="mensaje" name="mensaje" rows="4"></textarea>
+        </div>
+
+        <button type="submit" class="btn-enviar">ENVIAR</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast" style="
+  position:fixed;right:16px;bottom:16px;background:#2e7d32;color:#fff;
+  padding:12px 16px;border-radius:8px;display:none;z-index:60;"></div>
+
+<script>
+// --- Funciones base iguales al carrito ---
+function toast(m, ok=true){
+  const t=document.getElementById('toast');
+  t.textContent=m; t.style.background=ok?'#2e7d32':'#c62828';
+  t.style.display='block'; setTimeout(()=>t.style.display='none',2200);
+}
+
+// fetch con token
+window.authFetch = (url, opt = {}) => {
+  const t = localStorage.getItem('token');
+  const headers = { ...(opt.headers || {}) };
+  if (t) headers.Authorization = 'Bearer ' + t;
+  return fetch(url, { ...opt, headers });
+};
+
+// decodificar JWT
+function parseJwt(token){
+  try{
+    const base = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+    return JSON.parse(atob(base));
+  }catch{return {};}
+}
+
+// obtener idCliente del token
+window.ensureClienteId = async () => {
+  const cached = +localStorage.getItem('idCliente') || 0;
+  if (cached) return cached;
+  const t = localStorage.getItem('token');
+  if (t){
+    const p = parseJwt(t);
+    const id = p.idCliente ?? p.clienteId ?? p.id ?? p.userId ?? p.sub ?? 0;
+    if (id){
+      localStorage.setItem('idCliente', String(id));
+      return +id;
+    }
+  }
+  return 0;
+};
+
+// --- Envío del formulario ---
+const form = document.getElementById('contactForm');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd = new FormData(form);
+  const idCliente = await ensureClienteId().catch(()=>0);
+  const body = {
+    idCliente: idCliente || null,
+    nombre: (fd.get('nombre')||'').trim(),
+    telefono: (fd.get('telefono')||'').trim() || null,
+    email: (fd.get('email')||'').trim() || null,
+    mensaje: (fd.get('mensaje')||'').trim() || null,
+    estado: 'EN_REVISION'
+  };
+
+  if (!body.nombre) { toast('El nombre es obligatorio', false); return; }
+
+  try{
+    const r = await authFetch('/api/contactos', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) throw new Error('Error al enviar contacto');
+    const res = await r.json();
+    toast(`Mensaje enviado`);
+    form.reset();
+  }catch(err){
+    console.error(err);
+    toast(err.message || 'Error al enviar', false);
+  }
+});
+</script>
+
+</body>
+</html>

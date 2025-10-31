@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artia - Registro</title>
+  <link rel="stylesheet" href="/css/registro.css" />
+  <style>
+    /* mini toast */
+    #toast {
+      position: fixed; right: 20px; bottom: 20px;
+      background: #6b3e1e; color: #fff; padding: 12px 18px;
+      border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,.25);
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .3s ease, transform .3s ease;
+      z-index: 9999; pointer-events: none; font-family: Montserrat, sans-serif;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="background-circles">
+    <div class="circle1"></div><div class="circle2"></div><div class="circle3"></div>
+    <div class="circle4"></div><div class="circle5"></div><div class="circle6"></div>
+  </div>
+
+  <div class="register-box">
+    <a href="/inicio.html">
+      <img src="/img/logo.png" alt="Logo Artia" class="logo-artia" />
+    </a>
+
+    <form id="form-registro" novalidate>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required autocomplete="given-name" />
+        </div>
+
+        <div class="form-group">
+          <label for="apellido">Apellido</label>
+          <input type="text" id="apellido" name="apellido" placeholder="Tu apellido" required autocomplete="family-name" />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="ejemplo@gmail.com" required autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Teléfono</label>
+          <input
+            type="tel" id="telefono" name="telefono"
+            placeholder="+51 999 999 999" value="+51 "
+            autocomplete="tel" pattern="^\+51\s?\d{3}\s?\d{3}\s?\d{3}$" />
+        </div>
+
+        <div class="form-group">
+          <label for="contrasena">Contraseña</label>
+          <input type="password" id="contrasena" name="contrasena"
+                 placeholder="Crea una contraseña" required autocomplete="new-password" minlength="6" />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmar_contrasena">Confirmar contraseña</label>
+          <input type="password" id="confirmar_contrasena" name="confirmar_contrasena"
+                 placeholder="Confirma tu contraseña" required autocomplete="new-password" minlength="6" />
+        </div>
+
+        <div class="form-group">
+          <label for="fecha_cumple">Fecha de cumpleaños</label>
+          <input type="date" id="fecha_cumple" name="fecha_cumple" />
+        </div>
+      </div>
+
+      <button type="submit">REGISTRO</button>
+      <p id="err" style="display:none;color:#e33;margin-top:10px"></p>
+    </form>
+
+    <div class="login-link-container">
+      <p>¿Ya tienes una cuenta?</p>
+      <a href="/login.html" class="login-link">Ingresa</a>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => { t.classList.remove('show'); }, 2200);
+    }
+
+    document.getElementById('form-registro').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nombre     = document.getElementById('nombre').value.trim();
+      const apellido   = document.getElementById('apellido').value.trim();
+      const email      = document.getElementById('email').value.trim();
+      const telefono   = document.getElementById('telefono').value.trim();
+      const contrasena = document.getElementById('contrasena').value;
+      const confirmar  = document.getElementById('confirmar_contrasena').value;
+      const fecha_cumple = document.getElementById('fecha_cumple').value || null;
+
+      const err = document.getElementById('err');
+      err.style.display = 'none'; err.textContent = '';
+
+      // Validaciones básicas
+      if (!nombre || !apellido || !email || !contrasena) {
+        err.textContent = 'Completa los campos obligatorios.';
+        err.style.display = 'block'; return;
+      }
+      if (contrasena.length < 6) {
+        err.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+        err.style.display = 'block'; return;
+      }
+      if (contrasena !== confirmar) {
+        err.textContent = 'Las contraseñas no coinciden.';
+        err.style.display = 'block'; return;
+      }
+      const telRegex = /^\+51\s?\d{3}\s?\d{3}\s?\d{3}$/;
+      if (telefono && !telRegex.test(telefono)) {
+        err.textContent = 'Teléfono inválido. Formato: +51 999 999 999';
+        err.style.display = 'block'; return;
+      }
+
+      // Body EXACTO a tu RegistroDTO
+      const body = { nombre, apellido, email, contrasena, telefono, fecha_cumple };
+
+      try {
+        const res = await fetch('/api/clientes/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        if (!res.ok) {
+          let msg = 'Error al registrar';
+          try { msg = (await res.json()).message || msg; } catch {}
+          throw new Error(msg);
+        }
+
+        showToast('¡Cuenta creada!');
+        setTimeout(() => location.href = '/login.html', 800);
+      } catch (e2) {
+        err.textContent = e2.message || 'Error de red';
+        err.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Artia Pastelería - Mis Puntos</title>
+
+  <!-- CSS base primero -->
+  <link rel="stylesheet" href="/css/inicio.css"/>
+  <!-- CSS específico después -->
+  <link rel="stylesheet" href="/css/puntos.css"/>
+
+  <!-- Material Symbols para iconos del header -->
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <!-- Font Awesome para iconografía interna -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;700&family=Dancing+Script:wght@700&family=Montserrat:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* Alineación de acciones dentro de la tarjeta de historial */
+    .history-card-actions{
+      display:flex;justify-content:space-between;align-items:center;margin-top:15px;padding-top:10px;border-top:1px solid #f0f0f0
+    }
+    .btn-canjear-tabla{
+      padding:8px 15px;font-size:.9em;font-weight:700;color:var(--color-blanco);background-color:var(--color-ganancia);
+      border:none;border-radius:5px;cursor:pointer;transition:background-color .3s,transform .1s
+    }
+    .btn-canjear-tabla:hover:not(:disabled){background-color:#43A047}
+    .btn-canjear-tabla:disabled{background:#aaa;color:#ccc;cursor:not-allowed}
+  </style>
+</head>
+<body class="page-puntos">
+
+    
+<header>
+  <div class="header-top">
+    <a href="/inicio.html" class="logo">
+      <img src="/img/logo.png" alt="Artia Logo"/>
+    </a>
+
+    <div class="search-container">
+      <span class="material-symbols-outlined" aria-hidden="true">search</span>
+      <input type="text" placeholder="¿Qué comemos hoy...?" aria-label="Buscar"/>
+    </div>
+
+    <div class="header-icons">
+      <button id="notification-btn" class="icon-btn" aria-label="Notificaciones">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+
+      <div class="user-wrap">
+        <button id="userBtn" class="icon-btn" aria-label="Perfil">
+          <span class="material-symbols-outlined">account_circle</span>
+        </button>
+        <div id="userMenu" class="user-menu" hidden>
+          <div class="user-menu-header"><span id="userName">Invitado</span></div>
+          <a href="/login.html" id="loginLink">Iniciar sesión</a>
+          <a href="/registro.html" id="registerLink">Crear cuenta</a>
+          <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <a href="/carrito.html" aria-label="Carrito" class="icon-btn">
+        <span class="material-symbols-outlined">shopping_cart</span>
+      </a>
+
+      <button class="icon-btn hamburger-btn" id="hamburgerBtn" aria-label="Menú">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav" id="mainNav">
+  <ul>
+      <li><a href="/inicio.html">Inicio</a></li>
+      <li><a href="/nosotros.html">Nosotros</a></li>
+      <li><a href="/catalogo.html">Catalogo</a></li>
+    <li><a href="/eventos.html">Eventos</a></li>
+    <li><a href="/contacto.html">Contacto</a></li>
+    <li><a href="/reseñas.html">Reseñas</a></li>
+    <li><a href="/foro.html">Foro</a></li>
+    <li><a href="/puntos.html" class="active">Puntos</a></li>
+  </ul>
+</nav>
+
+<main>
+  <section class="puntos-dashboard-section">
+    <h1 class="puntos-title">TUS PUNTOS <span class="artia-logo-text">Artia</span></h1>
+    <p class="puntos-description">
+      Estos son tus puntos Artia. Úsalos para descuentos o canjéalos por productos.
+      <small>(Aplica a postres y cafés, consumo en salón)</small>
+    </p>
+
+    <div class="puntos-grid">
+      <!-- Reglas -->
+      <div class="puntos-grid-item rule-card-container">
+        <div class="rule-card puntos-card">
+          <div class="icon-box"><i class="fas fa-gift"></i></div>
+          <h4>¡Mientras más consumes, más chances de postres gratis!</h4>
+          <p>
+            Acumula <strong id="points-per-purchase">5 puntos</strong> por cada <strong id="currency-per-points">S/20</strong>.
+            <br><strong id="canje-threshold-text">¡Canjea desde 100 puntos!</strong>
+            <br>Descuentos, productos y sorpresas.
+          </p>
+        </div>
+      </div>
+
+      <!-- Estado actual -->
+      <div class="puntos-grid-item current-points-container">
+        <div class="puntos-card current-points-card">
+          <h2>Tu estado de puntos:</h2>
+          <div class="points-display">
+            <span id="current-points-value">0</span><br><small>pts</small>
+          </div>
+          <p class="incentive">¡Vamos por esos postres!</p>
+        </div>
+        <div class="image-overlay top-right" style="background-image:url('/img/tarta-fresas.jpg');"></div>
+      </div>
+
+      <!-- Historial -->
+      <div class="puntos-grid-item history-card-container">
+        <div class="puntos-card history-card">
+          <h2>Tu historial de puntos</h2>
+
+          <div class="history-table-container">
+            <table>
+              <thead>
+              <tr><th>Fecha / Producto</th><th>Detalle</th><th>Puntos</th></tr>
+              </thead>
+              <tbody id="history-table-body"></tbody>
+              <tfoot>
+              <tr>
+                <td colspan="2">**TOTAL DE PUNTOS ACTUAL:**</td>
+                <td id="total-history-points" class="points-total">**0 pts**</td>
+              </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <div class="history-card-actions">
+            <button class="btn-canjear-tabla" id="btnCanjearPuntosTabla">
+              <i class="fas fa-hand-holding-usd"></i> Canjear Puntos
+            </button>
+            <button class="btn-ver-mas">Ver historial completo</button>
+          </div>
+        </div>
+
+        <div class="image-overlay bottom-left-1" style="background-image:url('/img/tarta-arandanos.jpg');"></div>
+        <div class="image-overlay bottom-left-2" style="background-image:url('/img/croissant.jpg');"></div>
+        <div class="image-overlay bottom-left-3" style="background-image:url('/img/desayuno-salado.jpg');"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-col">
+      <h4>ESCRÍBENOS</h4>
+      <p>+51 222 222 222</p>
+      <p>artiapasteleria.com</p>
+      <div class="social-icons">
+        <a href="#" aria-label="Web"><span class="material-symbols-outlined">public</span></a>
+        <a href="#" aria-label="Instagram"><span class="material-symbols-outlined">photo_camera</span></a>
+        <a href="#" aria-label="Compartir"><span class="material-symbols-outlined">share</span></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>INFORMACIÓN</h4>
+      <a href="#">Términos y condiciones</a>
+      <a href="#">Políticas de Privacidad</a>
+      <a href="#">Libro de Reclamaciones</a>
+    </div>
+    <div class="footer-col footer-logo">
+      <img src="/img/logo2.png" alt="Logo Artia Footer"/>
+    </div>
+  </div>
+</footer>
+
+<div class="floating-buttons">
+  <a href="#" aria-label="WhatsApp"><img src="/img/whatsApp.jpg" alt="WhatsApp"/></a>
+  <a href="#" aria-label="Chat"><img src="/img/chatbot.png" alt="Chat"/></a>
+</div>
+
+<script>
+/* ========= Sesión / Header unificado ========= */
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('token');
+  const user  = localStorage.getItem('user');
+
+  const userBtn = document.getElementById('userBtn');
+  const userMenu = document.getElementById('userMenu');
+  const userName = document.getElementById('userName');
+  const loginLink = document.getElementById('loginLink');
+  const registerLink = document.getElementById('registerLink');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  if (token && user) {
+    if (userName) userName.textContent = user;
+    if (loginLink) loginLink.hidden = true;
+    if (registerLink) registerLink.hidden = true;
+    if (logoutBtn) logoutBtn.hidden = false;
+  } else {
+    if (logoutBtn) logoutBtn.hidden = true;
+  }
+
+  if (userBtn && userMenu) {
+    userBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.toggleAttribute('hidden');
+    });
+    document.addEventListener('click', () => userMenu.setAttribute('hidden', ''));
+  }
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.clear();
+      location.href = '/login.html';
+    });
+  }
+
+  // fetch autenticado común
+  window.authFetch = (url, opt = {}) => {
+    const t = localStorage.getItem('token');
+    const headers = { ...(opt.headers || {}) };
+    if (t) headers.Authorization = 'Bearer ' + t;
+    return fetch(url, { ...opt, headers });
+  };
+
+  /* ========= Menú y nav activo ========= */
+  const navLinks = document.querySelectorAll('.main-nav a');
+  navLinks.forEach(a => a.addEventListener('click', function(){
+    navLinks.forEach(n => n.classList.remove('active'));
+    this.classList.add('active');
+  }));
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mainNav = document.getElementById('mainNav');
+  if (hamburgerBtn && mainNav) {
+    hamburgerBtn.addEventListener('click', () => mainNav.classList.toggle('show'));
+  }
+
+  /* ========= Lógica Puntos ========= */
+  const STORAGE_KEY = 'puntosHistorialArtia';
+  const MIN_POINTS_FOR_CANJE = 100;
+  const POINTS_TO_REDEEM = 100;
+
+  function updatePointsAndNotifications() {
+    let historial = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (!historial) {
+      historial = [
+        { fecha: '20/10/2025', detalle: 'Compra Tarta de Fresa', producto: 'Compra', puntos: 15, tipo: 'purchase' },
+        { fecha: '21/10/2025', detalle: 'Compra Café + Croissant', producto: 'Compra', puntos: 10, tipo: 'purchase' },
+        { fecha: '22/10/2025', detalle: 'Compra Torta de Chocolate', producto: 'Compra', puntos: 25, tipo: 'purchase' },
+        { fecha: '23/10/2025', detalle: 'Compra de 2 Capuchinos', producto: 'Compra', puntos: 10, tipo: 'purchase' },
+        { fecha: '24/10/2025', detalle: 'Compra Tarta de Arándanos', producto: 'Compra', puntos: 40, tipo: 'purchase' }
+      ];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(historial));
+    }
+
+    const tbody = document.getElementById('history-table-body');
+    const currentPointsEl = document.getElementById('current-points-value');
+    const totalHistoryEl = document.getElementById('total-history-points');
+    const notificationBadge = document.getElementById('notification-badge');
+    const btnCanjearTabla = document.getElementById('btnCanjearPuntosTabla');
+
+    tbody.innerHTML = '';
+    let total = 0;
+
+    historial.forEach(t => {
+      const gain = t.tipo === 'purchase';
+      const value = gain ? t.puntos : -Math.abs(t.puntos);
+      total += value;
+
+      const row = tbody.insertRow();
+      row.classList.add(gain ? 'purchase-row' : 'redeem-row');
+      row.innerHTML = `
+        <td>${t.fecha}: ${t.producto}</td>
+        <td>${t.detalle}</td>
+        <td class="${gain ? 'points-gain' : 'points-loss'}">
+          ${gain ? '+' : '-'} ${Math.abs(t.puntos)} pts
+        </td>`;
+    });
+
+    currentPointsEl.textContent = total;
+    totalHistoryEl.innerHTML = `**${total} pts**`;
+
+    if (total >= MIN_POINTS_FOR_CANJE) {
+      btnCanjearTabla.disabled = false;
+      btnCanjearTabla.textContent = `Canjear Puntos (${POINTS_TO_REDEEM} pts)`;
+      notificationBadge.style.display = 'inline-block';
+      notificationBadge.textContent = '¡Canje!';
+    } else {
+      btnCanjearTabla.disabled = true;
+      btnCanjearTabla.textContent = `Canjear Puntos (Necesitas ${MIN_POINTS_FOR_CANJE - total} más)`;
+      notificationBadge.style.display = 'none';
+    }
+  }
+
+  function simulateRedeem(product, pointsLost) {
+    const fecha = new Date().toLocaleDateString('es-PE');
+    const item = { fecha, detalle: product, producto: 'Canje de puntos', puntos: pointsLost, tipo: 'redeem' };
+    const historial = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    historial.unshift(item);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(historial));
+  }
+
+  updatePointsAndNotifications();
+
+  const btnCanjearTabla = document.getElementById('btnCanjearPuntosTabla');
+  if (btnCanjearTabla) {
+    btnCanjearTabla.addEventListener('click', () => {
+      if (btnCanjearTabla.disabled) return;
+      const totalPoints = parseInt(document.getElementById('current-points-value').textContent);
+      if (totalPoints >= POINTS_TO_REDEEM) {
+        if (confirm(`¿Deseas canjear ${POINTS_TO_REDEEM} puntos por un producto/descuento Artia?`)) {
+          simulateRedeem('Canje de producto/descuento', POINTS_TO_REDEEM);
+          alert(`¡Canje exitoso! Se descontaron ${POINTS_TO_REDEEM} puntos.`);
+          updatePointsAndNotifications();
+        }
+      } else {
+        alert('Aún no tienes suficientes puntos para canjear.');
+      }
+    });
+  }
+
+  document.querySelectorAll('.btn-ver-mas, .btn-canjear-tabla').forEach(b => {
+    b.addEventListener('click', () => {
+      if (!b.disabled) {
+        b.classList.add('clicked');
+        setTimeout(() => b.classList.remove('clicked'), 300);
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>

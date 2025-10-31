@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Artia Pastelería - Catálogo</title>
+
+  <!-- Estilos base -->
+  <link rel="stylesheet" href="/css/inicio.css"/>
+  <link rel="stylesheet" href="/css/catalogo.css"/>
+
+  <!-- Iconos y fuentes -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;700&family=Dancing+Script:wght@700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="page-catalogo">
+
+<header>
+  <div class="header-top">
+    <a href="/inicio.html" class="logo">
+      <img src="/img/logo.png" alt="Artia Logo"/>
+    </a>
+
+    <div class="search-container">
+      <span class="material-symbols-outlined" aria-hidden="true">search</span>
+      <input type="text" placeholder="¿Qué comemos hoy...?" id="busqueda" aria-label="Buscar"/>
+    </div>
+
+    <div class="header-icons">
+      <button class="icon-btn" aria-label="Notificaciones">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+
+      <div class="user-wrap">
+        <button id="userBtn" class="icon-btn" aria-label="Perfil">
+          <span class="material-symbols-outlined">account_circle</span>
+        </button>
+        <div id="userMenu" class="user-menu" hidden>
+          <div class="user-menu-header"><span id="userName">Invitado</span></div>
+          <a href="/login.html" id="loginLink">Iniciar sesión</a>
+          <a href="/registro.html" id="registerLink">Crear cuenta</a>
+          <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <a href="/carrito.html" aria-label="Carrito" class="icon-btn">
+        <span class="material-symbols-outlined">shopping_cart</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <ul>
+    <li><a href="/inicio.html">Inicio</a></li>
+    <li><a href="/nosotros.html">Nosotros</a></li>
+    <li><a href="/catalogo.html" class="active">Catálogo</a></li>
+    <li><a href="/eventos.html">Eventos</a></li>
+    <li><a href="/contacto.html">Contacto</a></li>
+    <li><a href="/reseñas.html">Reseñas</a></li>
+    <li><a href="/foro.html">Foro</a></li>
+    <li><a href="/puntos.html">Puntos</a></li>
+  </ul>
+</nav>
+
+<main id="catalogo">
+  <section class="seccion-catalogo">
+    <h1 class="section-title">CATÁLOGO DE PRODUCTOS</h1>
+    <div class="separator-line"></div>
+    <div id="grid-productos" class="productos-grid"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-col">
+      <h4>ESCRÍBENOS</h4>
+      <p>+51 222 222 222</p>
+      <p>artiapasteleria.com</p>
+      <div class="social-icons">
+        <a href="#"><span class="material-symbols-outlined">public</span></a>
+        <a href="#"><span class="material-symbols-outlined">photo_camera</span></a>
+        <a href="#"><span class="material-symbols-outlined">share</span></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>INFORMACIÓN</h4>
+      <a href="#">Términos y condiciones</a>
+      <a href="#">Políticas de Privacidad</a>
+      <a href="#">Libro de Reclamaciones</a>
+    </div>
+    <div class="footer-col footer-logo">
+      <img src="/img/logo2.png" alt="Logo Artia Footer"/>
+    </div>
+  </div>
+</footer>
+
+<div class="floating-buttons">
+  <a href="#" aria-label="WhatsApp"><img src="/img/whatsApp.jpg" alt="WhatsApp"/></a>
+  <a href="#" aria-label="Chat"><img src="/img/chatbot.png" alt="Chat"/></a>
+</div>
+
+<!-- === Scripts === -->
+<script>
+/* Sesión básica (igual a inicio) */
+document.addEventListener('DOMContentLoaded', () => {
+  const t=localStorage.getItem('token'), u=localStorage.getItem('user');
+  const userBtn=document.getElementById('userBtn'), userMenu=document.getElementById('userMenu');
+  const userName=document.getElementById('userName'), loginLink=document.getElementById('loginLink');
+  const registerLink=document.getElementById('registerLink'), logoutBtn=document.getElementById('logoutBtn');
+
+  if(t && u){ userName.textContent=u; loginLink.hidden=true; registerLink.hidden=true; logoutBtn.hidden=false; }
+  else { logoutBtn.hidden=true; }
+
+  userBtn.addEventListener('click',e=>{e.stopPropagation();userMenu.toggleAttribute('hidden');});
+  document.addEventListener('click',()=>userMenu.setAttribute('hidden',''));
+  logoutBtn.addEventListener('click',()=>{localStorage.clear();location.href='/login.html';});
+});
+
+/* Toast */
+window.showToast = function(msg){
+  const t=document.createElement('div');
+  t.textContent=msg;
+  Object.assign(t.style,{
+    position:'fixed',right:'20px',bottom:'20px',background:'#6b3e1e',
+    color:'#fff',padding:'12px 18px',borderRadius:'10px',
+    boxShadow:'0 4px 10px rgba(0,0,0,.25)',opacity:'0',
+    transition:'opacity .3s, transform .3s',transform:'translateY(20px)',zIndex:'9999'
+  });
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateY(0)';});
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(20px)';setTimeout(()=>t.remove(),400);},2500);
+};
+
+/* Agregar al carrito (ahora incluye idProducto) */
+window.addToCart = function(nombre, precio, imagen, idProducto = null){
+  const prod = { idProducto: idProducto ? Number(idProducto) : null, nombre, precio, imagen, cantidad: 1 };
+  let c = JSON.parse(localStorage.getItem('carritoArtia')) || [];
+  const i = c.findIndex(p => (p.idProducto && prod.idProducto) ? p.idProducto === prod.idProducto : p.nombre === prod.nombre);
+  if(i > -1) c[i].cantidad = Math.min(99, (c[i].cantidad || 1) + 1);
+  else c.push(prod);
+  localStorage.setItem('carritoArtia', JSON.stringify(c));
+  showToast(`🛒 ${nombre} agregado`);
+};
+
+/* Cargar productos desde la BD */
+(async function(){
+  const grid=document.getElementById('grid-productos');
+const card = p => `
+  <div class="producto-card" 
+       data-id="${p.idProducto}" 
+       data-nombre="${p.nombre}" 
+       data-precio="${p.precio}" 
+       data-img="${p.imagenUrl}" 
+       data-stock="${p.stock}">
+    <img src="${p.imagenUrl || '/img/placeholder.png'}" alt="${p.nombre}" 
+         onerror="this.src='/img/placeholder.png'">
+    <div class="producto-info">
+      <h2>${p.nombre}</h2>
+      <p>S/ ${Number(p.precio).toFixed(2)}</p>
+      <button class="add-to-cart-btn">Seleccionar</button>
+    </div>
+  </div>`;
+
+
+  async function cargar(){
+    grid.innerHTML='<p style="grid-column:1/-1">Cargando productos…</p>';
+    try{
+      const r=await fetch('/api/productos');
+      if(!r.ok) throw new Error();
+      const productos=await r.json();
+      if(!productos.length){grid.innerHTML='<p style="grid-column:1/-1">No hay productos.</p>';return;}
+      grid.innerHTML=productos.map(card).join('');
+      grid.querySelectorAll('.add-to-cart-btn').forEach(btn=>{
+        btn.addEventListener('click',e=>{
+          const card=e.currentTarget.closest('.producto-card');
+          const { id, nombre, precio, img } = card.dataset;
+          addToCart(nombre, parseFloat(precio), img, id); // ✅ ahora pasa el id
+        });
+      });
+    }catch{grid.innerHTML='<p style="grid-column:1/-1;color:#b00">Error cargando catálogo.</p>';}
+  }
+  cargar();
+})();
+</script>
+
+</body>
+</html>

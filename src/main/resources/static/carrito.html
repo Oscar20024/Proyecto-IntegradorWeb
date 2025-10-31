@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Carrito de Compras | Artia Pastelería</title>
+
+  
+  <link rel="stylesheet" href="/css/carrito.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+
+  <style>
+    .section-card{border:1px solid #e2d6c9;border-radius:12px;padding:18px;margin:18px 0;background:#fff}
+    .section-title{font-weight:700;margin:0 0 10px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    .btn{display:inline-block;padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+    .btn-primary{background:#6b3e1e;color:#fff}
+    .btn-outline{background:#fff;border:1px solid #cbb09a;color:#6b3e1e}
+    .btn[disabled]{opacity:.5;cursor:not-allowed}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50}
+    .modal.show{display:flex}
+    .modal-box{background:#fff;border-radius:14px;max-width:640px;width:92%;padding:18px}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .modal-header h3{margin:0}
+    .close{cursor:pointer;font-size:22px}
+    .uploader{border:2px dashed #cbb09a;border-radius:10px;padding:16px;text-align:center}
+    .uploader input{display:block;margin:10px auto}
+    .pedido-card{border:1px solid #e2d6c9;border-radius:10px;padding:12px;margin:10px 0;background:#fff}
+    .pedido-card small{color:#6b6b6b}
+    .meta{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+    .producto-list{margin:8px 0 0 16px}
+    .toast{position:fixed;right:16px;bottom:16px;background:#2e7d32;color:#fff;padding:12px 16px;border-radius:8px;display:none;z-index:60}
+    .toast.show{display:block}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field input, .field select, .field textarea{padding:10px;border:1px solid #d7c6b6;border-radius:8px}
+    .hint{color:#6b6b6b;font-size:.9rem}
+    .producto-imagen{width:42px;height:42px;object-fit:cover;border-radius:6px;border:1px solid #eee}
+    .producto-info{display:flex;align-items:center;gap:8px}
+    .carrito-container{max-width:1000px;margin:0 auto;padding:16px}
+    .carrito-tabla{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e2d6c9;border-radius:12px;overflow:hidden}
+    .carrito-tabla th,.carrito-tabla td{padding:12px;border-bottom:1px solid #f0e6dd}
+    .carrito-total{display:flex;justify-content:flex-end;padding:12px 0}
+    .cantidad-control{display:flex;align-items:center;gap:8px}
+    .btn-cantidad{padding:4px 10px;border:1px solid #cbb09a;background:#fff;border-radius:6px;cursor:pointer}
+    .btn-eliminar{background:#fff;border:1px solid #e57373;color:#c62828;border-radius:6px;padding:6px 10px;cursor:pointer}
+  </style>
+</head>
+<body>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <div class="carrito-container">
+   <h1><i class="fas fa-shopping-cart"></i> Mi Carrito - 
+  <a href="/inicio.html" style="text-decoration:none; color:inherit; cursor:pointer;">Artia</a>
+</h1>
+
+
+    <table class="carrito-tabla">
+      <thead>
+        <tr><th>Producto</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th></th></tr>
+      </thead>
+      <tbody id="carrito-body"><!-- render dinámico --></tbody>
+    </table>
+
+    <div class="carrito-total">
+      <h3>Total a Pagar: <span id="total-carrito">S/ 0.00</span></h3>
+    </div>
+
+    <!-- Dirección -->
+    <div class="section-card" id="bloque-envio">
+      <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Dirección de entrega</h2>
+      <div class="grid-3">
+        <div class="field">
+          <label for="envio-distrito">Distrito</label>
+          <select id="envio-distrito">
+            <option value="">Selecciona…</option>
+            <option>Ica</option><option>La Tinguiña</option><option>Los Aquijes</option>
+            <option>Ocucaje</option><option>Pachacútec</option><option>Parcona</option>
+            <option>Pueblo Nuevo</option><option>Salas</option>
+            <option>San José de los Molinos</option><option>San Juan Bautista</option>
+            <option>Santiago</option><option>Subtanjalla</option><option>Tate</option>
+            <option>Yauca del Rosario</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="envio-direccion">Dirección</label>
+          <input id="envio-direccion" type="text" placeholder="Ej. Av. Lima 123"/>
+        </div>
+        <div class="field">
+          <label for="envio-referencia">Referencia</label>
+          <input id="envio-referencia" type="text" placeholder="Frente al parque…"/>
+        </div>
+        <!-- Comentarios -->
+        <div class="field" style="grid-column:1 / -1">
+          <label for="envio-coment">Comentarios</label>
+          <textarea id="envio-coment" rows="3" placeholder="…"></textarea>
+        </div>
+      </div>
+      <small class="hint">Se envía junto al pedido.</small>
+    </div>
+
+    <!-- Programar -->
+    <div class="section-card">
+      <h2 class="section-title"><i class="fas fa-calendar-check"></i> ¿Deseas programar la entrega?</h2>
+      <div>
+        <label><input type="radio" name="prog" value="no" checked> No</label>
+        &nbsp;&nbsp;
+        <label><input type="radio" name="prog" value="si"> Sí</label>
+      </div>
+      <div id="prog-fields" style="margin-top:10px;display:none">
+        <div class="grid-2">
+          <div class="field"><label>Fecha</label><input type="date" id="fecha-entrega"/></div>
+          <div class="field"><label>Hora</label><input type="time" id="hora-entrega"/></div>
+        </div>
+        <small class="hint">Si no eliges fecha/hora, será entrega estándar.</small>
+      </div>
+    </div>
+
+    <!-- Pago -->
+    <div class="section-card">
+      <h2 class="section-title"><i class="fas fa-hand-holding-usd"></i> Elige tu Método de Pago</h2>
+      <div class="grid-2">
+        <div class="section-card" style="margin:0">
+          <h4><i class="fas fa-university"></i> Transferencia (BCP/Interbank)</h4><hr/>
+          <p><strong>BCP:</strong>00238017822660403348</p>
+          <p><strong>Interbank:</strong> 098-76543210-9-87</p>
+          <p><strong>Titular:</strong> Oscar Gutierrez Rojas</p>
+          <button class="btn btn-outline" id="btn-transferencia">Subir comprobante</button>
+        </div>
+        <div class="section-card" style="margin:0">
+          <h4><i class="fas fa-mobile-alt"></i> Yape/Plin</h4><hr/>
+          <p><strong>Celular:</strong> 914 551 726 </p>
+          <img src="/img/qr.jpeg" alt="QR Yape/Plin" style="max-width:200px;border-radius:10px"/>
+          <div><small>Escanéa el QR y luego sube tu captura.</small></div>
+          <button class="btn btn-outline" id="btn-yape">Subir comprobante</button>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <button id="btn-confirmar" class="btn btn-primary" disabled>Confirmar Pedido</button>
+      </div>
+      <small class="hint">El pago quedará <b>EN_REVISION</b> hasta validación interna.</small>
+    </div>
+
+    <!-- Pedidos (desde BD) -->
+    <div class="section-card">
+      <h2 class="section-title"><i class="fas fa-receipt"></i> Pedidos</h2>
+      <div id="historial-list"><small>Cargando…</small></div>
+    </div>
+  </div>
+
+  <!-- Modal Transferencia -->
+  <div id="modal-transf" class="modal" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-header"><h3><i class="fas fa-university"></i> Transferencia</h3><span class="close" data-close="modal-transf">&times;</span></div>
+      <p><strong>Subir una imagen de su transferencia</strong></p>
+      <div class="uploader"><input type="file" id="file-transf" accept="image/*"/><small>JPG/PNG (máx. 5MB)</small></div>
+      <div style="text-align:right;margin-top:12px"><button class="btn btn-primary" id="guardar-transf">Guardar</button></div>
+    </div>
+  </div>
+
+  <!-- Modal Yape/Plin -->
+  <div id="modal-yape" class="modal" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-header"><h3><i class="fas a-mobile-alt"></i> Yape/Plin</h3><span class="close" data-close="modal-yape">&times;</span></div>
+      <p><strong>Subir una imagen de su transferencia</strong></p>
+      <div class="uploader"><input type="file" id="file-yape" accept="image/*"/><small>JPG/PNG (máx. 5MB)</small></div>
+      <div style="text-align:right;margin-top:12px"><button class="btn btn-primary" id="guardar-yape">Guardar</button></div>
+    </div>
+  </div>
+
+<script>
+// ---------- fetch con Authorization (global) ----------
+window.authFetch = (url, opt = {}) => {
+  const t = localStorage.getItem('token');
+  const headers = { ...(opt.headers || {}) };
+  if (t) headers.Authorization = 'Bearer ' + t;
+  return fetch(url, { ...opt, headers });
+};
+
+// ---------- ensureIds: completa idProducto desde backend ----------
+async function ensureIds(carrito){
+  return Promise.all(carrito.map(async p=>{
+    if (p.idProducto) return p; // ya tiene id
+    try{
+      const r = await authFetch(`/api/productos/buscar?nombre=${encodeURIComponent(p.nombre)}`);
+      if (r.ok){
+        const arr  = await r.json();
+        const prod = Array.isArray(arr) ? arr[0] : arr;
+        if (prod){
+          p.idProducto = prod.idProducto ?? prod.id ?? null;
+          p.precio     = Number(prod.precio ?? p.precio);
+          p.imagen     = prod.imagenUrl ?? p.imagen;
+        }
+      }
+    }catch{}
+    return p;
+  }));
+}
+
+// ---------- JWT → payload (solo lectura) ----------
+function parseJwt(token){
+  try{
+    const base = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+    return JSON.parse(atob(base));
+  }catch{ return {}; }
+}
+
+// ---------- Obtener idCliente (global) ----------
+window.ensureClienteId = async () => {
+  const cached = +localStorage.getItem('idCliente') || 0;
+  if (cached) return cached;
+  const t = localStorage.getItem('token');
+  if (t){
+    const p = parseJwt(t);
+    const fromJwt = p.idCliente ?? p.clienteId ?? p.id ?? p.userId ?? p.sub ?? 0;
+    if (fromJwt){
+      localStorage.setItem('idCliente', String(fromJwt));
+      return +fromJwt;
+    }
+  }
+  return 0;
+};
+
+// ---------- Redirección si no hay sesión ----------
+if (!localStorage.getItem('token')) location.href = '/login.html';
+
+// ===================== CARRITO =====================
+(() => {
+  // ---- Constantes / helpers UI
+  const STORAGE_CART='carritoArtia';
+  const STORAGE_ORDER_CACHE='pedidoCacheItems'; // { [idPedido]: items[] }
+  const STORAGE_ORDER_META='pedidoCacheMeta';   // { [idPedido]: {fechaEntrega,horaEntrega,distrito,direccion,referencia,comentarios} }
+
+  const soles = n => `S/ ${Number(n).toFixed(2)}`;
+  window.toast=(m,ok=true)=>{
+    const t=document.getElementById('toast');
+    t.textContent=m; t.style.background=ok?'#2e7d32':'#c62828';
+    t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200);
+  };
+
+  // ---- Estado
+  let metodo=null, fileComprobante=null, programar={usar:false,fecha:null,hora:null};
+
+  // ---- DOM
+  const $tbody=document.getElementById('carrito-body');
+  const $total=document.getElementById('total-carrito');
+  const $btnConfirmar=document.getElementById('btn-confirmar');
+  const $historial=document.getElementById('historial-list');
+
+  const $envDistrito=document.getElementById('envio-distrito');
+  const $envDireccion=document.getElementById('envio-direccion');
+  const $envRef=document.getElementById('envio-referencia');
+  const $envComent=document.getElementById('envio-coment');
+
+  // ---- Programación
+  const $progFields=document.getElementById('prog-fields');
+  document.querySelectorAll('input[name="prog"]').forEach(r=>{
+    r.addEventListener('change',()=>{
+      programar.usar=(r.value==='si');
+      $progFields.style.display=programar.usar?'block':'none';
+    });
+  });
+  document.getElementById('fecha-entrega')?.addEventListener('change',e=>programar.fecha=e.target.value);
+  document.getElementById('hora-entrega') ?.addEventListener('change',e=>programar.hora =e.target.value);
+
+  // ---- Modales
+  const open=id=>document.getElementById(id).classList.add('show');
+  const close=id=>document.getElementById(id).classList.remove('show');
+  document.querySelectorAll('.close').forEach(x=>x.addEventListener('click',()=>close(x.dataset.close)));
+  document.getElementById('btn-transferencia').addEventListener('click',()=>{metodo='Transferencia';open('modal-transf');});
+  document.getElementById('btn-yape').addEventListener('click',()=>{metodo='Yape/Plin';open('modal-yape');});
+  document.getElementById('guardar-transf').addEventListener('click',()=>{
+    const f=document.getElementById('file-transf').files[0];
+    if(!f){toast('Adjunta la imagen de la transferencia',false);return;}
+    if(f.size>5*1024*1024){toast('Máximo 5MB',false);return;}
+    fileComprobante=f; close('modal-transf'); toast('Comprobante cargado'); validarListo();
+  });
+  document.getElementById('guardar-yape').addEventListener('click',()=>{
+    const f=document.getElementById('file-yape').files[0];
+    if(!f){toast('Adjunta la captura de Yape/Plin',false);return;}
+    if(f.size>5*1024*1024){toast('Máximo 5MB',false);return;}
+    fileComprobante=f; close('modal-yape'); toast('Comprobante cargado'); validarListo();
+  });
+
+  // ---- Carrito
+  const leerCarrito=()=>JSON.parse(localStorage.getItem(STORAGE_CART)||'[]');
+  const guardarCarrito=c=>localStorage.setItem(STORAGE_CART,JSON.stringify(c));
+  function renderCarrito(){
+    const c=leerCarrito();
+    if(!c.length){
+      $tbody.innerHTML=`<tr><td colspan="5" style="text-align:center;padding:2rem">Tu carrito está vacío. <a href="/catalogo.html">Ir al catálogo</a></td></tr>`;
+      $total.textContent=soles(0); validarListo(); return;
+    }
+    $tbody.innerHTML=c.map((p,i)=>`
+      <tr class="producto-fila" data-index="${i}">
+        <td><div class="producto-info"><img src="${p.imagen}" alt="${p.nombre}" class="producto-imagen"><span>${p.nombre}</span></div></td>
+        <td>${soles(p.precio)}</td>
+        <td><div class="cantidad-control">
+            <button class="btn-cantidad" data-acc="menos">-</button>
+            <span class="cantidad-numero">${p.cantidad}</span>
+            <button class="btn-cantidad" data-acc="mas">+</button>
+        </div></td>
+        <td>${soles(p.precio*p.cantidad)}</td>
+        <td><button class="btn-eliminar" data-acc="eliminar"><i class="fas fa-trash-alt"></i></button></td>
+      </tr>`).join('');
+    const total=c.reduce((a,p)=>a+p.precio*p.cantidad,0);
+    $total.textContent=soles(total);
+    $tbody.querySelectorAll('button[data-acc]').forEach(b=>b.addEventListener('click',e=>{
+      const tr=e.currentTarget.closest('tr'); const idx=+tr.dataset.index;
+      let cc=leerCarrito();
+      if(e.currentTarget.dataset.acc==='mas') cc[idx].cantidad=Math.min(99,cc[idx].cantidad+1);
+      if(e.currentTarget.dataset.acc==='menos') cc[idx].cantidad=Math.max(1,cc[idx].cantidad-1);
+      if(e.currentTarget.dataset.acc==='eliminar') cc.splice(idx,1);
+      guardarCarrito(cc); renderCarrito(); validarListo();
+    }));
+    validarListo();
+  }
+  function validarListo(){
+    const c=leerCarrito();
+    $btnConfirmar.disabled=!(c.length>0 && metodo && fileComprobante);
+  }
+
+  // ---- Normalizador de detalles
+  function normalizarDetalle(d){
+    const nombre =
+      d.nombreProducto ?? d.productoNombre ?? d.nombre_producto ?? d.nombre ??
+      (d.producto && (d.producto.nombre || d.producto.titulo)) ??
+      ('Producto ' + (d.idProducto ?? d.productoId ?? d.id ?? ''));
+    const cantidad = Number(d.cantidad ?? d.qty ?? d.cant ?? d.cantidadProducto ?? 1) || 1;
+    const precio = Number(
+      d.precioUnitario ?? d.precio_unitario ?? d.precio ?? d.montoUnitario ?? d.monto ??
+      (d.producto && (d.producto.precio ?? d.producto.precioUnitario)) ?? 0
+    ) || 0;
+    const imagen = d.imagen ?? d.urlImagen ?? d.imagenUrl ?? d.foto ?? d.thumbnail ??
+                   d.url ?? (d.producto?.imagen) ?? (d.producto?.urlImagen) ?? '';
+    return { nombre, cantidad, precio, imagen };
+  }
+
+  // ---- Helpers
+  const getPedidoId     = o => o.idPedido ?? o.pedidoId ?? o.id ?? o.codigo;
+  const getFechaPedido  = o => o.fechaPedido ?? o.fecha_pedido ?? o.createdAt ?? o.fecha ?? new Date().toISOString();
+  const getEntregaFecha = o => o.fechaEntrega ?? o.fecha_entrega ?? o.entregaFecha ?? o.deliveryDate ??
+                               o.programacion?.fecha ?? o.programa?.fecha ?? o.entrega?.fecha ?? null;
+  const getEntregaHora  = o => o.horaEntrega  ?? o.hora_entrega  ?? o.entregaHora  ?? o.deliveryTime  ??
+                               o.programacion?.hora  ?? o.programa?.hora  ?? o.entrega?.hora  ?? null;
+
+  // ---- Cache helpers
+  const readOrderCache = () => JSON.parse(localStorage.getItem(STORAGE_ORDER_CACHE) || '{}');
+  const writeOrderCache = (obj) => localStorage.setItem(STORAGE_ORDER_CACHE, JSON.stringify(obj));
+  const readMetaCache = () => JSON.parse(localStorage.getItem(STORAGE_ORDER_META) || '{}');
+  const writeMetaCache = (obj) => localStorage.setItem(STORAGE_ORDER_META, JSON.stringify(obj));
+
+  // ---- Fallback detalles
+  async function fetchDetallesConFallback(pid){
+    const paths = [
+      `/api/pedidos/${pid}/detalles`,
+      `/api/pedidos/${pid}/items`,
+      `/api/pedido-detalles?pedidoId=${pid}`,
+      `/api/items?pedidoId=${pid}`,
+      `/api/pedidos/${pid}`
+    ];
+    for (const url of paths){
+      try{
+        const r = await authFetch(url);
+        if (!r.ok) continue;
+        const j = await r.json();
+        if (Array.isArray(j) && j.length) return j;
+        if (!Array.isArray(j) && Array.isArray(j.items) && j.items.length) return j.items;
+      }catch{}
+    }
+    return [];
+  }
+
+  // ---- Pagos
+  async function pagosDe(pid){
+    const r = await authFetch(`/api/pagos?pedidoId=${pid}`);
+    return r.ok ? await r.json() : [];
+  }
+
+// ---- Verificación de stock (sin token, usando endpoints públicos)
+// ---- Verificación de stock (solo bloquea con dato válido)
+async function getStockByProduct(p){
+  try{
+    p.cantidad = Number(p.cantidad) || 0;
+
+    // Completar id por nombre (público)
+    if(!p.idProducto && p.nombre){
+      const rB = await fetch(`/api/public/productos/buscar?nombre=${encodeURIComponent(p.nombre)}`);
+      if(rB.ok){
+        const arr = await rB.json();
+        const prod = Array.isArray(arr)? arr.find(x=>x.nombre===p.nombre) ?? arr[0] : arr;
+        if (prod){
+          p.idProducto = Number(prod.idProducto ?? prod.id ?? null);
+          p.precio     = Number(prod.precio ?? p.precio);
+          p.imagen     = prod.imagenUrl ?? p.imagen;
+        }
+      }
+    }
+    if(!p.idProducto) {
+      console.warn('[Stock] sin idProducto', p);
+      return {ok:true, id:null, nombre:p.nombre, stock:Infinity, solicitado:p.cantidad}; // no bloquea
+    }
+
+    const r = await fetch(`/api/public/stock/${p.idProducto}`);
+    if(!r.ok){
+      console.warn('[Stock] endpoint devolvió', r.status, '→ no bloqueo');
+      return {ok:true, id:p.idProducto, nombre:p.nombre, stock:Infinity, solicitado:p.cantidad};
+    }
+
+    const j = await r.json();
+    const stockRaw = j.stock ?? j.stockDisponible ?? j.stock_actual ?? j.cantidad ?? j.disponible;
+    const stockNum = Number(stockRaw);
+    const stock = Number.isFinite(stockNum) ? stockNum : Infinity; // si no es número, no bloquea
+
+    const ok = p.cantidad <= stock;
+    console.log('[StockCheck]', {id:p.idProducto, nombre:p.nombre, solicitado:p.cantidad, stock});
+    return {ok, id:p.idProducto, nombre:p.nombre, stock, solicitado:p.cantidad};
+
+  }catch(e){
+    console.warn('[Stock] error → no bloqueo', e);
+    return {ok:true, id:p.idProducto||null, nombre:p.nombre, stock:Infinity, solicitado:p.cantidad};
+  }
+}
+
+
+// ==================== VERIFICAR STOCK ====================
+async function verificarStock(carrito){
+  for(const p of carrito){
+    try {
+      const r = await fetch(`/api/public/stock/${p.idProducto}`);
+      if(!r.ok) {
+        toast(`Error al consultar stock de ${p.nombre}`, false);
+        return false;
+      }
+      const prod = await r.json();
+      const stock = Number(prod.stock ?? 0);
+      if(p.cantidad > stock){
+        toast(`"${p.nombre}" solo tiene ${stock} unidades disponibles.`, false);
+        return false; // ❌ Detiene el proceso
+      }
+    } catch(e) {
+      console.error(e);
+      toast(`No se pudo verificar stock de ${p.nombre}`, false);
+      return false;
+    }
+  }
+  return true; // ✅ Todo OK
+}
+
+
+
+ 
+
+  // ---- Cargar pedidos
+  async function fetchPedidosBD(){
+    const idCliente = await window.ensureClienteId();
+    if (!idCliente && !localStorage.getItem('token')){
+      $historial.innerHTML = '<small>Inicia sesión para ver tus pedidos.</small>'; return;
+    }
+    if (!idCliente){ $historial.innerHTML = '<small>No hay pedidos para mostrar.</small>'; return; }
+
+    try{
+      const r = await authFetch(`/api/pedidos?clienteId=${idCliente}`);
+      if(!r.ok) throw new Error('No se pudo cargar pedidos');
+      const pedidos = await r.json();
+      if(!pedidos.length){ $historial.innerHTML = '<small>No hay pedidos aún.</small>'; return; }
+
+      const itemsCache = readOrderCache();
+      const metaCache  = readMetaCache();
+
+      const withItems = await Promise.all(pedidos.map(async p=>{
+        const pid = getPedidoId(p);
+
+        if (!Array.isArray(p.items) || !p.items.length){
+          let det = pid ? await fetchDetallesConFallback(pid) : [];
+          if ((!det || !det.length) && itemsCache[pid]) det = itemsCache[pid];
+          p.items = det || [];
+        }
+
+        if (metaCache[pid]){
+          const m = metaCache[pid];
+          p.fechaEntrega = p.fechaEntrega ?? p.fecha_entrega ?? m.fechaEntrega ?? null;
+          p.horaEntrega  = p.horaEntrega  ?? p.hora_entrega  ?? m.horaEntrega  ?? null;
+          p.distrito     = p.distrito ?? m.distrito ?? null;
+          p.direccion    = p.direccion ?? m.direccion ?? null;
+          p.referencia   = p.referencia ?? m.referencia ?? null;
+          p.comentarios  = p.comentarios ?? m.comentarios ?? null;
+        }
+        return p;
+      }));
+
+      renderPedidos(withItems);
+    }catch(e){
+      console.error(e);
+      $historial.innerHTML = '<small>Error cargando pedidos.</small>';
+    }
+  }
+
+  // ---- Render historial
+  async function renderPedidos(lista){
+    const meta = readMetaCache();
+    const html = await Promise.all(
+      lista
+        .sort((a,b)=> (getPedidoId(b)??0) - (getPedidoId(a)??0))
+        .map(async o=>{
+          const pid = getPedidoId(o);
+
+          const pagos = await pagosDe(pid);
+          const comprobanteHTML = pagos.map(pg =>
+            pg.ruta ? `<a href="${pg.ruta}" target="_blank">Ver comprobante</a>` : ''
+          ).join(' ') || 'No disponible';
+
+          const fEnt = getEntregaFecha(o) ?? meta[pid]?.fechaEntrega ?? null;
+          const hEnt = getEntregaHora(o)  ?? meta[pid]?.horaEntrega  ?? null;
+
+          const distrito   = o.distrito   ?? meta[pid]?.distrito   ?? '';
+          const direccion  = o.direccion  ?? meta[pid]?.direccion  ?? '';
+          const referencia = o.referencia ?? meta[pid]?.referencia ?? '';
+          const comentarios= o.comentarios?? meta[pid]?.comentarios?? '';
+
+          const entregaTxt = (fEnt||hEnt) ? `${fEnt??''} ${hEnt??''}`.trim() : 'Estándar';
+          const dirTxt = [distrito, direccion].filter(Boolean).join(' — ') + (referencia? ` (${referencia})`:'' );
+          const entrega = dirTxt ? `${entregaTxt} · ${dirTxt}` : entregaTxt;
+
+          const itemsNorm = (o.items || []).map(normalizarDetalle);
+          const itemsHTML = itemsNorm.length
+            ? itemsNorm.map(it=>`
+                <li style="display:flex;align-items:center;gap:8px;margin:4px 0">
+                  ${it.imagen ? `<img src="${it.imagen}" alt="" class="producto-imagen">` : ''}
+                  <span>${it.nombre} x${it.cantidad} — S/ ${(it.precio*it.cantidad).toFixed(2)}</span>
+                </li>`).join('')
+            : `<li style="list-style:none;color:#777">No se cargaron artículos para este pedido.</li>`;
+
+          const comentHTML = comentarios ? `<div style="margin-top:6px"><strong>Comentarios:</strong> ${comentarios}</div>` : '';
+
+          return `
+            <div class="pedido-card">
+              <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+                <div><strong>Pedido #${pid}</strong> — <small>${new Date(getFechaPedido(o)).toLocaleString()}</small></div>
+                <div><strong>Total:</strong> ${soles(Number(o.total||0))}</div>
+              </div>
+              <div class="meta" style="margin-top:6px">
+                <div><strong>Estado pago:</strong> ${o.estadoPago||o.estado||'EN_REVISION'}</div>
+                <div><strong>Entrega:</strong> ${entrega}</div>
+              </div>
+              ${comentHTML}
+              <div style="margin-top:6px"><strong>Comprobante:</strong> ${comprobanteHTML}</div>
+              <div style="margin-top:6px"><strong>Artículos:</strong>
+                <ul class="producto-list">${itemsHTML}</ul>
+              </div>
+            </div>`;
+        })
+    );
+    $historial.innerHTML = html.join('');
+  }
+
+  // ---- Envío pedido
+  async function enviarPedido({items,total,metodo,programar,fileComprobante,envio}){
+    const idCliente = await window.ensureClienteId();
+    if(!idCliente) throw new Error('Inicia sesión para continuar');
+
+    const pedidoBody={
+      idCliente,
+      fechaEntrega: programar.usar ? (programar.fecha || null) : null,
+      horaEntrega:  programar.usar ? (programar.hora  || null) : null,
+      total: Number(total.toFixed(2)),
+      estado: "EN_REVISION",
+      distrito: envio.distrito || null,
+      direccion: envio.direccion || null,
+      referencia: envio.referencia || null,
+      comentarios: envio.comentarios || null
+    };
+
+    const r1 = await authFetch('/api/pedidos',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(pedidoBody)
+    });
+    if(!r1.ok) throw new Error('Error creando pedido');
+    const { idPedido } = await r1.json();
+
+    // Cache: items
+    const itemsCache = readOrderCache();
+    itemsCache[idPedido] = items;
+    writeOrderCache(itemsCache);
+
+    // Cache: meta
+    const metaCache = readMetaCache();
+    metaCache[idPedido] = {
+      fechaEntrega: pedidoBody.fechaEntrega,
+      horaEntrega : pedidoBody.horaEntrega,
+      distrito   : pedidoBody.distrito,
+      direccion  : pedidoBody.direccion,
+      referencia : pedidoBody.referencia,
+      comentarios: pedidoBody.comentarios
+    };
+    writeMetaCache(metaCache);
+
+    // Detalles (no bloquea)
+    for(const it of items){
+      const det={ idProducto: it.idProducto || null, nombreProducto: it.nombre, cantidad: it.cantidad, precioUnitario: it.precio };
+      try{
+        await authFetch(`/api/pedidos/${idPedido}/detalles`,{
+          method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(det)
+        });
+      }catch(e){ console.warn('[WARN] detalle no guardado', e); }
+    }
+
+    // Pago (no bloqueante)
+    const fd=new FormData();
+    fd.append('idPedido', String(idPedido));
+    fd.append('monto', String(Number(total).toFixed(2)));
+    fd.append('metodo', metodo);
+    fd.append('estadoPago', 'EN_REVISION');
+    fd.append('comprobante', fileComprobante, fileComprobante.name);
+    try{ await authFetch('/api/pagos',{method:'POST',body:fd}); }catch{}
+
+    return { idPedido };
+  }
+
+  // ---- Confirmar
+  document.getElementById('btn-confirmar').addEventListener('click', async ()=>{
+    let carrito = leerCarrito();
+    if(!carrito.length){ toast('Tu carrito está vacío', false); return; }
+    if(!metodo || !fileComprobante){ toast('Falta método o comprobante', false); return; }
+
+    try{
+      // Completar ids si faltan
+      try { carrito = await ensureIds(carrito); } catch(e){ console.warn(e); }
+
+      // Verificar stock disponible (simple)
+      $btnConfirmar.disabled = true;
+      const okStock = await verificarStock(carrito);
+      if(!okStock){ $btnConfirmar.disabled = false; return; }
+
+      const envio={
+        distrito:$envDistrito.value.trim(),
+        direccion:$envDireccion.value.trim(),
+        referencia:$envRef.value.trim(),
+        comentarios:$envComent.value.trim()
+      };
+      if(!envio.distrito || !envio.direccion){ toast('Completa distrito y dirección', false); $btnConfirmar.disabled=false; return; }
+      if(programar.usar && (!programar.fecha || !programar.hora)){ toast('Selecciona fecha y hora', false); $btnConfirmar.disabled=false; return; }
+
+      const items=carrito.map(p=>({ idProducto:p.idProducto||null, nombre:p.nombre, precio:p.precio, cantidad:p.cantidad, imagen:p.imagen }));
+      const total=carrito.reduce((a,p)=>a+p.precio*p.cantidad,0);
+
+      const { idPedido } = await enviarPedido({items,total,metodo,programar,fileComprobante,envio});
+      localStorage.removeItem(STORAGE_CART);
+      renderCarrito(); validarListo();
+      toast(`Pedido #${idPedido} enviado (EN_REVISION)`, true);
+      await fetchPedidosBD();
+    }catch(err){
+      console.error(err); toast(err.message||'Error enviando pedido', false);
+    }finally{
+      $btnConfirmar.disabled=false;
+    }
+  });
+
+  // ---- Inicializar
+  renderCarrito();
+  fetchPedidosBD();
+})();
+</script>
+
+
+</body>
+</html>

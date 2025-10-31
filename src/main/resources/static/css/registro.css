@@ -1,0 +1,187 @@
+body {
+    margin: 0;
+    background: #fff;
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 20px 0; /* Espacio para que el contenido no pegue a los bordes al hacer scroll */
+}
+
+.background-circles {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    overflow: visible;
+}
+
+.background-circles div {
+    position: absolute;
+    border-radius: 50%;
+    border: 40px solid #e6750b;
+    background-color: #f6c47e;
+    opacity: 0.5;
+}
+
+.background-circles .circle1 {
+    width: 300px;
+    height: 300px;
+    top: -160px;
+    left: -160px;
+}
+
+.background-circles .circle2 {
+    width: 300px;
+    height: 350px;
+    top: 190px;
+    left: -240px;
+}
+
+.background-circles .circle3 {
+    width: 350px;
+    height: 300px;
+    top:-250px;
+    left: 165px;
+}
+
+.background-circles .circle4 {
+    width: 300px;
+    height: 300px;
+    bottom: -190px;
+    right: -120px;
+}
+
+.background-circles .circle5 {
+    width: 300px;
+    height: 350px;
+    bottom: 160px;
+    right: -240px;
+}
+
+.background-circles .circle6 {
+    width: 350px;
+    height: 300px;
+    bottom: -220px;
+    right: 200px;
+}
+
+.register-box {
+    position: relative;
+    background-color: #ffddb3;
+    padding: 30px 45px 40px 45px;
+    width: 750px;
+    max-width: 90%;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(160, 80, 12, 0.12);
+    z-index: 1;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.logo-artia {
+    width: 260px;
+    margin: 0 auto 15px auto;
+    display: block;
+    user-select: none;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    color: #7b4f17;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-transform: capitalize;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 12px 18px;
+    background-color: #fff;
+    border: 2.8px solid #de8f3c;
+    border-radius: 23px;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
+    color: #7b4f17; /* Color del texto para select y date */
+}
+
+/* Estilo para el texto de marcador de posición */
+.form-group input::placeholder {
+    color: #c69a6b;
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: #d58f3d;
+}
+
+/* Estilo para el icono del calendario en los campos de fecha */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(45%) sepia(20%) saturate(2713%) hue-rotate(344deg) brightness(89%) contrast(92%);
+    cursor: pointer;
+}
+
+form button {
+    background-color: #de8f3c;
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    border-radius: 23px;
+    padding: 14px 60px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 3px 14px rgba(160, 80, 12, 0.15);
+    transition: background-color 0.25s ease;
+    margin-top: 20px;
+    margin-bottom: 25px; 
+}
+
+form button:hover {
+    background-color: #b76a10;
+}
+
+.login-link-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.login-link-container p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #7b4f17;
+}
+
+.login-link {
+    color: #b76a10;
+    font-size: 1em;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.login-link:hover {
+    color: #e6750b;
+    text-decoration: underline;
+}
+
+

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artia - La pastelería de Mc.Grill</title>
+  <link rel="stylesheet" href="/css/login.css" />
+</head>
+<body>
+  <!-- Fondos -->
+  <div class="background-circles">
+    <div class="circle1"></div><div class="circle2"></div><div class="circle3"></div>
+    <div class="circle4"></div><div class="circle5"></div><div class="circle6"></div>
+  </div>
+
+  <!-- Caja de login -->
+  <div class="login-box">
+    <a href="/inicio.html">
+      <img src="/img/logo.png" alt="Logo Artia" class="logo-artia">
+    </a>
+
+    <form id="form-login" autocomplete="on">
+      <input id="user" type="email" placeholder="Correo" required>
+      <input id="pass" type="password" placeholder="Contraseña" required>
+      <button type="submit">ENTRAR</button>
+      <p id="err" style="display:none;color:#e33">Credenciales incorrectas</p>
+    </form>
+
+    <a href="/registro.html" class="register-link">¿No tienes cuenta? Regístrate</a>
+  </div>
+
+<script>
+  // Intenta extraer idCliente del JWT si el backend no lo envía explícito
+  function parseJwt(token){
+    try {
+      const base = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+      return JSON.parse(atob(base));
+    } catch { return {}; }
+  }
+
+  document.getElementById('form-login').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const body = {
+      email: document.getElementById('user').value.trim(),
+      password: document.getElementById('pass').value
+    };
+
+    try {
+      const r = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (!r.ok) {
+        let msg = 'Credenciales inválidas';
+        try { const err = await r.json(); msg = err.message || msg; } catch {}
+        throw new Error(msg);
+      }
+
+      const data = await r.json();
+
+      // Esperamos al menos: { token, nombre?, apellido?, idCliente? }
+      localStorage.setItem('token', data.token);
+
+      // Nombre a mostrar
+      const nombre   = (data.nombre || '').toString().trim();
+      const apellido = (data.apellido || '').toString().trim();
+      const displayName = (nombre && apellido) ? `${nombre} ${apellido}` :
+                          (nombre || data.email || 'Invitado');
+      localStorage.setItem('user', displayName);
+
+      // Rol opcional
+      if (data.role) localStorage.setItem('role', data.role);
+
+      // Guardar idCliente (de la respuesta o del JWT)
+      let idC = data.idCliente ?? data.clienteId ?? data.id;
+      if (!idC) {
+        const p = parseJwt(data.token);
+        idC = p.idCliente ?? p.clienteId ?? p.id ?? p.userId ?? p.sub;
+      }
+      if (idC) localStorage.setItem('idCliente', String(idC));
+
+      // Redirigir
+      location.href = '/inicio.html';
+    } catch (err) {
+      const errBox = document.getElementById('err');
+      errBox.textContent = err.message || 'Error de login';
+      errBox.style.display = 'block';
+    }
+  });
+</script>
+</body>
+</html>

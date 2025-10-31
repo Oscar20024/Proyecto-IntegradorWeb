@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Artia Pastelería - Foro de Chat en Línea</title>
+
+  <!-- CSS base primero -->
+  <link rel="stylesheet" href="/css/inicio.css"/>
+  <!-- CSS específico después -->
+  <link rel="stylesheet" href="/css/foro.css"/>
+
+  <!-- Material Symbols para iconos del header -->
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <!-- Font Awesome solo para algunos íconos del chat -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;700&family=Dancing+Script:wght@700&family=Montserrat:wght@400;700&display=swap"
+    rel="stylesheet">
+</head>
+<body class="page-foro">
+
+<header>
+  <div class="header-top">
+    <a href="/inicio.html" class="logo">
+      <img src="/img/logo.png" alt="Artia Logo"/>
+    </a>
+
+    <div class="search-container">
+      <span class="material-symbols-outlined" aria-hidden="true">search</span>
+      <input type="text" placeholder="¿Qué comemos hoy...?" aria-label="Buscar"/>
+    </div>
+
+    <div class="header-icons">
+      <button class="icon-btn" aria-label="Notificaciones">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+
+      <div class="user-wrap">
+        <button id="userBtn" class="icon-btn" aria-label="Perfil">
+          <span class="material-symbols-outlined">account_circle</span>
+        </button>
+        <div id="userMenu" class="user-menu" hidden>
+          <div class="user-menu-header"><span id="userName">Invitado</span></div>
+          <a href="/login.html" id="loginLink">Iniciar sesión</a>
+          <a href="/registro.html" id="registerLink">Crear cuenta</a>
+          <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <a href="/carrito.html" aria-label="Carrito" class="icon-btn">
+        <span class="material-symbols-outlined">shopping_cart</span>
+      </a>
+
+      <button class="icon-btn hamburger-btn" id="hamburgerBtn" aria-label="Menú">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav" id="mainNav">
+  <ul>
+      <li><a href="/inicio.html">Inicio</a></li>
+      <li><a href="/nosotros.html">Nosotros</a></li>
+      <li><a href="/catalogo.html">Catalogo</a></li>
+    <li><a href="/eventos.html">Eventos</a></li>
+    <li><a href="/contacto.html">Contacto</a></li>
+    <li><a href="/reseñas.html">Reseñas</a></li>
+    <li><a href="/foro.html" class="active">Foros</a></li>
+    <li><a href="/puntos.html">Puntos</a></li>
+  </ul>
+</nav>
+<main>
+  <section class="foro-intro-section">
+    <p class="intro-escribenos">Únete a la conversación en nuestro</p>
+    <h1 class="foro-title">FORO EN LÍNEA</h1>
+    <p class="foro-description">¡Comparte tus recetas, experiencias y dudas con la comunidad Artia!</p>
+
+    <div class="alias-editor-container">
+      <label for="aliasInput">Tu alias actual es: <strong><span id="currentAlias">@MiAlias_Artia</span></strong></label>
+      <div class="alias-input-group">
+        <input type="text" id="aliasInput" placeholder="Escribe tu nuevo alias (máx. 15 caracteres)" maxlength="15">
+        <button type="button" id="saveAliasBtn" class="save-alias-btn">Guardar Alias</button>
+      </div>
+      <small>El alias se guardará solo durante esta sesión del navegador.</small>
+    </div>
+  </section>
+
+  <section class="foro-chat-area">
+    <div class="chat-main-container">
+      <div class="users-online-area">
+        <h2 class="online-title">Usuarios Conectados</h2>
+        <ul class="user-list" id="userList">
+          <li class="user-item user-active">
+            <i class="fas fa-circle active-dot"></i>
+            <span id="onlineUserAlias">@MiAlias_Artia</span> (Tú)
+          </li>
+          <li class="user-item"><i class="fas fa-circle active-dot"></i> Dulce_Vida</li>
+          <li class="user-item"><i class="fas fa-circle active-dot"></i> ElGourmet</li>
+          <li class="user-item"><i class="fas fa-circle active-dot"></i> Pastelero23</li>
+          <li class="user-item user-away"><i class="fas fa-circle active-dot away-dot"></i> FanDeKeyLime</li>
+          <li class="user-item"><i class="fas fa-circle active-dot"></i> Chef_Pastel</li>
+          <li class="user-item"><i class="fas fa-circle active-dot"></i> TartaFan</li>
+          <li class="user-item"><i class="fas fa-circle active-dot"></i> AmanteDelCafe</li>
+        </ul>
+      </div>
+
+      <div class="chat-messages-area">
+        <div id="chatNotification" class="chat-notification"></div>
+
+        <div class="messages-history" id="messagesHistory">
+          <div class="message-item">
+            <span class="chat-alias">Dulce_Vida:</span>
+            ¡Hola a todos! ¿Alguien ha probado la tarta de limón? ¡Es increíble! 🍋✨
+          </div>
+          <div class="message-item self-message" data-text="Yo la probé hoy. ¡El relleno cremoso y la base de galleta son perfectos! ¿Qué opinan de los nuevos rollos de canela? 😋">
+            <div class="message-content">
+              <span class="chat-alias">@MiAlias_Artia:</span>
+              Yo la probé hoy. ¡El relleno cremoso y la base de galleta son perfectos! ¿Qué opinan de los nuevos rollos de canela? 😋
+            </div>
+            <div class="message-actions">
+              <i class="fas fa-pen-to-square edit-btn" title="Editar"></i>
+              <i class="fas fa-trash-can delete-btn" title="Eliminar"></i>
+            </div>
+          </div>
+          <div class="message-item">
+            <span class="chat-alias">ElGourmet:</span>
+            Los rollos son TOP. Tip: Pídanlos con un extra de glaseado de vainilla, ¡es una locura! 😉
+          </div>
+          <div class="message-item">
+            <span class="chat-alias">Pastelero23:</span>
+            Una pregunta para el staff: ¿Los cursos de macarons serán este mes? Gracias. 🙏
+          </div>
+          <div class="message-item">
+            <span class="chat-alias">Chef_Pastel:</span>
+            Sí, Pastelero23, revisa el apartado de Eventos, hay una sección de talleres de macarons y trufas. ¡Te va a encantar! 👨‍🍳
+          </div>
+        </div>
+
+        <div class="chat-input-area">
+          <input type="text" placeholder="Escribe tu mensaje y presiona Enter o Enviar..." id="chatInput"/>
+          <button type="button" class="send-btn" id="sendBtn" title="Enviar"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-col">
+      <h4>ESCRÍBENOS</h4>
+      <p>+51 222 222 222</p>
+      <p>artiapasteleria.com</p>
+      <div class="social-icons">
+        <a href="#" aria-label="Web"><span class="material-symbols-outlined">public</span></a>
+        <a href="#" aria-label="Instagram"><span class="material-symbols-outlined">photo_camera</span></a>
+        <a href="#" aria-label="Compartir"><span class="material-symbols-outlined">share</span></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>INFORMACIÓN</h4>
+      <a href="#">Términos y condiciones</a>
+      <a href="#">Políticas de Privacidad</a>
+      <a href="#">Libro de Reclamaciones</a>
+    </div>
+    <div class="footer-col footer-logo">
+      <img src="/img/logo2.png" alt="Logo Artia Footer"/>
+    </div>
+  </div>
+</footer>
+
+<div class="floating-buttons">
+  <a href="#" aria-label="WhatsApp"><img src="/img/whatsApp.jpg" alt="WhatsApp"/></a>
+  <a href="#" aria-label="Chat"><img src="/img/chatbot.png" alt="Chat"/></a>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // ========= SESIÓN / MENÚ USUARIO =========
+  const token = localStorage.getItem('token');
+  const user  = localStorage.getItem('user');
+  const userBtn = document.getElementById('userBtn');
+  const userMenu = document.getElementById('userMenu');
+  const userName = document.getElementById('userName');
+  const loginLink = document.getElementById('loginLink');
+  const registerLink = document.getElementById('registerLink');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  if (token && user) {
+    if (userName) userName.textContent = user;
+    if (loginLink) loginLink.hidden = true;
+    if (registerLink) registerLink.hidden = true;
+    if (logoutBtn) logoutBtn.hidden = false;
+  } else {
+    if (logoutBtn) logoutBtn.hidden = true;
+  }
+
+  if (userBtn && userMenu) {
+    userBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.toggleAttribute('hidden');
+    });
+    document.addEventListener('click', () => userMenu.setAttribute('hidden', ''));
+  }
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.clear();
+      location.href = '/login.html';
+    });
+  }
+
+  // fetch autenticado común
+  window.authFetch = (url, opt = {}) => {
+    const t = localStorage.getItem('token');
+    const headers = { ...(opt.headers || {}) };
+    if (t) headers.Authorization = 'Bearer ' + t;
+    return fetch(url, { ...opt, headers });
+  };
+
+  // ========= NAV + HAMBURGUESA =========
+  const navLinks = document.querySelectorAll('.main-nav a');
+  navLinks.forEach(a => a.addEventListener('click', function () {
+    navLinks.forEach(n => n.classList.remove('active'));
+    this.classList.add('active');
+  }));
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mainNav = document.getElementById('mainNav');
+  if (hamburgerBtn && mainNav) {
+    hamburgerBtn.addEventListener('click', () => mainNav.classList.toggle('show'));
+  }
+
+  // ========= CHAT / ALIAS =========
+  const sendBtn = document.getElementById('sendBtn');
+  const chatInput = document.getElementById('chatInput');
+  const messagesHistory = document.getElementById('messagesHistory');
+  const chatNotification = document.getElementById('chatNotification');
+
+  const aliasInput = document.getElementById('aliasInput');
+  const saveAliasBtn = document.getElementById('saveAliasBtn');
+  const currentAliasDisplay = document.getElementById('currentAlias');
+  const onlineUserAliasDisplay = document.getElementById('onlineUserAlias');
+
+  // Alias de sesión (solo pestaña/ventana actual)
+  const DEFAULT_ALIAS = '@MiAlias_Artia';
+  let userAlias = sessionStorage.getItem('artia_alias') || DEFAULT_ALIAS;
+
+  function showNotification(message) {
+    chatNotification.textContent = message;
+    chatNotification.classList.add('show');
+    setTimeout(() => chatNotification.classList.remove('show'), 3000);
+  }
+
+  function applyAliasToOwnMessages() {
+    // Actualiza el alias visible en mensajes propios existentes
+    document.querySelectorAll('.self-message .message-content .chat-alias').forEach(span => {
+      span.textContent = userAlias + ':';
+    });
+  }
+
+  function updateAlias(newAlias) {
+    const clean = (newAlias.startsWith('@') ? newAlias : '@' + newAlias)
+      .trim().replace(/\s+/g, '_').substring(0, 15);
+    userAlias = clean || DEFAULT_ALIAS;
+    sessionStorage.setItem('artia_alias', userAlias);
+    currentAliasDisplay.textContent = userAlias;
+    onlineUserAliasDisplay.textContent = userAlias;
+    aliasInput.value = '';
+    applyAliasToOwnMessages();
+    showNotification(`Alias actualizado a: ${userAlias}`);
+  }
+
+  // Estado inicial alias en UI
+  currentAliasDisplay.textContent = userAlias;
+  onlineUserAliasDisplay.textContent = userAlias;
+  applyAliasToOwnMessages();
+
+  saveAliasBtn.addEventListener('click', () => {
+    const value = aliasInput.value.trim();
+    if (!value) return showNotification('Ingresa un alias válido.');
+    updateAlias(value);
+  });
+
+  // ========= EDITAR / ELIMINAR MENSAJES (solo propios) =========
+  let editingMessage = null;
+
+  function editComment(messageElement) {
+    if (!messageElement.classList.contains('self-message')) {
+      return showNotification('Solo puedes editar tus mensajes.');
+    }
+    if (editingMessage && editingMessage !== messageElement) {
+      return showNotification('Termina de editar el mensaje actual.');
+    }
+    const originalText = messageElement.getAttribute('data-text') || '';
+    chatInput.value = originalText;
+    chatInput.focus();
+    editingMessage = messageElement;
+    messageElement.classList.add('is-editing');
+    sendBtn.innerHTML = '<i class="fas fa-check"></i>';
+    sendBtn.classList.add('editing');
+    sendBtn.title = 'Guardar Edición';
+  }
+
+  function deleteComment(messageElement) {
+    if (!messageElement.classList.contains('self-message')) {
+      return showNotification('Solo puedes eliminar tus mensajes.');
+    }
+    if (confirm('¿Eliminar este comentario?')) {
+      if (editingMessage === messageElement) {
+        editingMessage = null;
+        chatInput.value = '';
+        sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+        sendBtn.classList.remove('editing');
+        sendBtn.title = 'Enviar';
+      }
+      messageElement.classList.add('is-deleted');
+      setTimeout(() => {
+        messageElement.remove();
+        showNotification('Comentario eliminado.');
+      }, 300);
+    }
+  }
+
+  messagesHistory.addEventListener('click', (e) => {
+    const btn = e.target;
+    if (btn.classList.contains('edit-btn')) {
+      editComment(btn.closest('.message-item'));
+    } else if (btn.classList.contains('delete-btn')) {
+      deleteComment(btn.closest('.message-item'));
+    }
+  });
+
+  // ========= ENVIAR MENSAJE =========
+  function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    if (editingMessage) {
+      const contentDiv = editingMessage.querySelector('.message-content');
+      contentDiv.innerHTML = `<span class="chat-alias">${userAlias}:</span> ${text} <small class="edited-label">(Editado)</small>`;
+      editingMessage.setAttribute('data-text', text);
+      editingMessage.classList.remove('is-editing');
+      editingMessage = null;
+      sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+      sendBtn.classList.remove('editing');
+      sendBtn.title = 'Enviar';
+      showNotification('Comentario editado con éxito.');
+    } else {
+      const wrap = document.createElement('div');
+      wrap.classList.add('message-item', 'self-message');
+      wrap.setAttribute('data-text', text);
+      wrap.innerHTML = `
+        <div class="message-content">
+          <span class="chat-alias">${userAlias}:</span> ${text}
+        </div>
+        <div class="message-actions">
+          <i class="fas fa-pen-to-square edit-btn" title="Editar"></i>
+          <i class="fas fa-trash-can delete-btn" title="Eliminar"></i>
+        </div>
+      `;
+      wrap.style.opacity = '0';
+      messagesHistory.appendChild(wrap);
+      setTimeout(() => { wrap.style.opacity = '1'; }, 50);
+    }
+
+    chatInput.value = '';
+    messagesHistory.scrollTop = messagesHistory.scrollHeight;
+  }
+
+  document.getElementById('sendBtn').addEventListener('click', sendMessage);
+  chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  // Auto-scroll al final al cargar
+  messagesHistory.scrollTop = messagesHistory.scrollHeight;
+});
+</script>
+</body>
+</html>

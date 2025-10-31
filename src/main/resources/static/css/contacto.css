@@ -1,0 +1,368 @@
+/* ==================== IMPORTACIÓN DE ESTILOS BASE ==================== */
+/* Asume que este archivo contiene variables, estilos de header y footer, y responsive base. */
+@import url('inicio.css'); 
+
+
+/* ==================== ESTILOS DEL BANNER / IMAGEN PRINCIPAL ==================== */
+
+.page-banner {
+    position: relative;
+    width: 100%;
+    /* Mantenido a 1050px */
+    height: 1050px; 
+    overflow: hidden;
+    margin-top: 0; 
+}
+
+.banner-img {
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    display: block;
+}
+
+/* ==================== ESTILOS DEL CONTENIDO PRINCIPAL (SEPARACIÓN GARANTIZADA) ==================== */
+
+.contacto-main {
+    position: relative; 
+    z-index: 10; 
+    
+    margin-top: 0; 
+    padding-top: 100px; /* Espacio blanco de separación */
+    
+    background-color: var(--color-blanco); 
+    padding-bottom: 3rem; 
+}
+
+.contacto-section {
+    max-width: 900px; 
+    margin: 0 auto; 
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem; 
+}
+
+/* 📝 --- ESTILOS DEL FORMULARIO (AJUSTADO AL MODELO CON ETIQUETAS) --- 📝 */
+.formulario-container {
+    padding: 2.5rem 3rem; 
+    background-color: var(--color-blanco); 
+    border-radius: 15px; 
+    width: 100%; 
+    margin: 0 auto; 
+    box-sizing: border-box;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); 
+    
+    margin-bottom: 2rem; 
+}
+
+.titulo-contacto {
+    font-family: var(--fuente-principal);
+    font-size: 1.8rem; 
+    color: var(--color-primario);
+    text-align: center;
+    margin-bottom: 2.5rem; 
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem; 
+}
+
+.form-group-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 1.2rem; 
+}
+
+/* Contenedor de cada par label + input */
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem; /* Espacio entre la etiqueta y el campo */
+}
+
+/* Estilo de la etiqueta (el texto encima del campo) */
+.contact-form label {
+    font-family: var(--fuente-principal);
+    font-size: 1rem;
+    color: var(--color-texto); /* Color del texto de la etiqueta (ej. Nombre) */
+    font-weight: 500;
+}
+
+/* Estilo de los campos de entrada */
+.contact-form input[type="text"],
+.contact-form input[type="tel"],
+.contact-form input[type="email"],
+.contact-form input[type="number"],
+.contact-form textarea {
+    padding: 1rem 1.2rem; 
+    /* Borde del color primario (marrón/naranja) */
+    border: 1px solid var(--color-primario); 
+    /* Radio de la cápsula para los inputs */
+    border-radius: 30px; 
+    font-family: var(--fuente-principal);
+    font-size: 1rem;
+    color: var(--color-texto);
+    outline: none;
+    transition: all 0.3s ease; 
+    /* Reajustar el ancho para que ocupe todo el espacio disponible */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: var(--color-primario); 
+    box-shadow: none; 
+}
+
+.contact-form textarea {
+    min-height: 120px;
+    resize: vertical;
+    /* Radio menor para el textarea grande */
+    border-radius: 15px; 
+}
+
+/* Asegura que el textarea ocupe todo el ancho en la cuadrícula principal */
+.input-wrapper-full {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+/* ELIMINAMOS los estilos de placeholder ya que usamos <label>
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    display: none; 
+}
+*/
+
+.btn-enviar {
+    background-color: var(--color-primario); 
+    color: var(--color-blanco);
+    border: none;
+    padding: 1rem 3rem; 
+    border-radius: 30px; 
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 200px; 
+    align-self: center; 
+    box-shadow: 0 6px 15px rgba(210, 140, 58, 0.5); 
+    margin-top: 1rem;
+    text-transform: uppercase;
+}
+
+.btn-enviar:hover {
+    background-color: #d88c40; 
+}
+
+/* --- ESTILOS DE LA INFORMACIÓN DE CONTACTO Y FOTOS (MANTENIDOS) --- */
+
+.info-contacto-section {
+    max-width: 900px; 
+    margin: 0 auto; 
+    display: flex;
+    justify-content: space-between;
+    gap: 3rem;
+    align-items: flex-start;
+    padding: 2rem 0;
+}
+
+.escribenos-info {
+    flex: 1;
+    min-width: 300px;
+    color: var(--color-texto);
+}
+
+.titulo-escribenos {
+    font-size: 1.5rem; 
+    color: var(--color-primario); 
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    font-weight: bold;
+}
+
+.store-address {
+    margin: 0.8rem 0;
+    line-height: 1.4;
+}
+
+.store-name {
+    font-weight: bold;
+    color: var(--color-primario);
+}
+
+.phone-number {
+    font-weight: 500;
+}
+
+.email-link {
+    color: var(--color-primario);
+    text-decoration: underline; 
+    display: inline-block;
+    margin: 1.5rem 0;
+    font-weight: bold;
+}
+
+.email-link:hover {
+    text-decoration: none;
+    color: var(--color-texto);
+}
+
+.siguenos-text {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.social-links-list {
+    list-style-type: disc; 
+    padding-left: 1.2rem;
+    margin: 0;
+}
+
+.social-links-list li {
+    margin: 0.3rem 0;
+}
+
+.social-links-list li a {
+    color: var(--color-texto);
+    text-decoration: none;
+    display: inline;
+    font-weight: 500;
+}
+
+.social-links-list li a:hover {
+    color: var(--color-primario);
+}
+
+/* 🖼️ --- IMÁGENES DE CONTACTO (SIN BORDE BLANCO) --- 🖼️ */
+.contacto-images {
+    position: relative;
+    width: 400px; 
+    height: 450px; 
+    flex-shrink: 0; 
+}
+
+.image-wrapper {
+    position: absolute;
+    overflow: hidden;
+    /* BORDE BLANCO ELIMINADO */
+    border-radius: 50% / 40%; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); 
+    transform: rotate(3deg); 
+}
+
+.cookie-image {
+    width: 250px; 
+    height: 350px; 
+    top: 0;
+    right: 0;
+    z-index: 2; 
+    transform: rotate(0); 
+}
+
+.sandwich-image {
+    width: 250px; 
+    height: 380px; 
+    bottom: 0;
+    left: 0;
+    transform: translate(-10%, 15%) rotate(-8deg); 
+    z-index: 1;
+}
+
+.contacto-images img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ==================== DISEÑO RESPONSIVE ESPECÍFICO DE CONTACTO ==================== */
+
+/* Tablet (max-width: 992px) */
+@media (max-width: 992px) { 
+    .page-banner {
+        height: 500px; 
+    }
+    .contacto-main {
+        margin-top: 0; 
+        padding-top: 70px; 
+    }
+    
+    .formulario-container {
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 1rem; 
+    }
+    
+    .contacto-section {
+        gap: 3rem; 
+    }
+    
+    .info-contacto-section {
+        flex-direction: column-reverse; 
+        align-items: center;
+        gap: 2rem;
+    }
+    
+    .contacto-images {
+        width: 300px; 
+        height: 350px; 
+    }
+    .image-wrapper {
+        border-radius: 50% / 45%; 
+        transform: rotate(0); 
+    }
+    .cookie-image {
+        width: 180px; 
+        height: 250px; 
+        right: 10%;
+    }
+    .sandwich-image {
+        width: 280px; 
+        height: 220px; 
+        transform: translate(-5%, 20%) rotate(-5deg); 
+    }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+    .page-banner {
+        height: 300px; 
+    }
+    .contacto-main {
+        margin-top: 0; 
+        padding: 50px 0.5rem 0; 
+    }
+    .contacto-section {
+        padding: 0;
+        gap: 1.5rem;
+    }
+    
+    .formulario-container {
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 0; 
+    }
+    /* En móvil, los campos van a una columna */
+    .form-group-grid {
+        grid-template-columns: 1fr; 
+        gap: 1rem;
+    }
+    
+    .contacto-images {
+        display: none; 
+    }
+}
+
+
+

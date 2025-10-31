@@ -1,0 +1,403 @@
+/*
+ * Archivo: reseñas.css
+ * Descripción: Estilos específicos para la página de reseñas de Artia Pastelería, 
+ * incluyendo espaciado ajustado, círculos decorativos y el layout diagonal.
+ */
+
+/* ==================== VARIABLES CSS GLOBALES (Asumiendo que vienen de inicio.css o están aquí) ==================== */
+:root { 
+    --color-primario: #d17a29; /* Naranja/Marrón Principal */
+    --color-secundario: #f8e4cb; /* Crema/Claro */
+    --color-texto: #78481e; /* Marrón Oscuro */
+    --color-blanco: #ffffff; 
+    --fuente-principal: 'Montserrat', sans-serif;
+    --fuente-secundaria: 'Dancing Script', cursive;
+
+    /* === Colores específicos de las imágenes === */
+    --color-fondo-reseña: #f8f7f5; /* Fondo casi blanco del grid de reseñas */
+    --color-borde-azul: #61b3e8; /* Borde azul de la primera reseña/formulario */
+    --color-fondo-formulario-box: #e4d1c0; /* Marrón claro del fondo del formulario */
+    --color-btn-enviar: #a87955; /* Marrón oscuro del botón ENVIAR */
+
+    /* Colores para los círculos (con opacidad en el CSS) */
+    --circle-crema: #f8e4cb;
+    --circle-naranja: #d17a29;
+}
+
+
+/* ==================== ESTILOS GENERALES Y LAYOUT ==================== */
+
+.main-reseñas {
+    padding: 0; 
+    overflow-x: hidden; 
+}
+
+/* ==================== SECCIÓN BANNER DE RESEÑAS ==================== */
+.reseñas-banner {
+    position: relative;
+    width: 100%;
+    height: 500px; /* Aumentado para más espacio */
+    background-image: url('re_1.jpg'); 
+    background-size: cover;
+    background-position: center center; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0; 
+}
+
+.banner-content {
+    /* Color que se ve en la imagen: Crema con un poco de transparencia/saturación */
+    background-color: rgba(248, 228, 203, 0.9); 
+    padding: 4rem 7rem; /* Aumentado el padding */
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.banner-content h1 {
+    font-family: var(--fuente-principal);
+    color: var(--color-primario); 
+    font-size: 1.5rem; /* Fuente ligeramente más grande */
+    margin: 0;
+    font-weight: 600;
+    line-height: 0.4;
+}
+
+
+/* ==================== SECCIÓN RESEÑAS DE CLIENTES ==================== */
+.reseñas-clientes {
+    background-color: var(--color-fondo-reseña); 
+    padding: 5rem 2rem 8rem 2rem; /* Aumentado el padding vertical para más espaciado */
+    position: relative; 
+    z-index: 1; 
+}
+
+.reseñas-clientes h2 {
+    font-family: var(--fuente-principal);
+    color: var(--color-texto);
+    font-size: 2.2rem; 
+    margin-bottom: 5rem; /* Más espacio debajo del título */
+    font-weight: 700;
+    text-align: center;
+}
+
+.reseñas-container-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    padding-top: 2rem; 
+}
+
+.reseñas-grid {
+    display: flex;
+    flex-direction: column; 
+    gap: 3rem; /* Aumentado el espacio entre tarjetas */
+    max-width: 900px; 
+    margin: 0 auto;
+    position: relative;
+    z-index: 2; 
+}
+
+.reseña-card {
+    background-color: var(--color-secundario); 
+    padding: 1.8rem; /* Aumentado el padding interno */
+    border-radius: 15px;
+    width: 100%;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /* Borde por defecto para la segunda y tercera tarjeta (Marrón/Gris) */
+    border: 3px solid rgba(190, 190, 190, 0.8); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Borde AZUL (Primera tarjeta y nuevas) */
+.reseña-card.borde-azul { 
+    border-color: var(--color-borde-azul); 
+}
+
+.reseña-card .perfil {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem; /* Más espacio */
+}
+
+.reseña-card .perfil i {
+    font-size: 3rem; /* Icono más grande */
+    color: var(--color-primario);
+    margin-right: 1.2rem; 
+}
+
+.reseña-card .perfil .nombre {
+    font-weight: bold;
+    color: var(--color-texto);
+    font-size: 1.2rem; 
+}
+
+.reseña-card .rating {
+    margin-bottom: 1rem;
+}
+
+.reseña-card .rating i {
+    color: #e6b800; 
+    font-size: 1.4rem; /* Estrellas más grandes */
+}
+
+.reseña-card .comentario {
+    color: var(--color-texto);
+    line-height: 1.6;
+    margin: 0;
+    font-size: 1.05rem; 
+}
+
+
+/* Disposición diagonal en desktop */
+@media (min-width: 993px) {
+    .reseñas-grid {
+        display: block; /* Vuelve a block para controlar la posición con márgenes */
+        width: 100%;
+        max-width: 900px; 
+    }
+
+    .reseña-card {
+        max-width: 450px; 
+        margin-bottom: 3rem; /* Espacio vertical ligeramente aumentado */
+    }
+
+    /* Primera tarjeta (y nuevas que se añaden con prepend) - Arriba a la izquierda */
+    .reseñas-grid > .reseña-card:nth-child(1) {
+        margin-left: 0;
+        margin-top: 0;
+        margin-bottom: 3rem;
+        margin-right: auto;
+    }
+
+    /* Segunda tarjeta - Centro */
+    .reseñas-grid > .reseña-card:nth-child(2) {
+        margin: -4rem auto 3rem auto; /* Sube, centra, y separa más */
+    }
+
+    /* Tercera tarjeta - Abajo a la derecha */
+    .reseñas-grid > .reseña-card:nth-child(3) {
+        margin-left: auto; /* Mueve a la derecha */
+        margin-right: 0;
+        margin-top: -4rem; /* Sube y separa más */
+        margin-bottom: 3rem;
+    }
+}
+
+
+/* ------------------- Círculos Decorativos (Estilos) ------------------- */
+.circles-bg-reseñas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; 
+    pointer-events: none; 
+    z-index: 1; 
+}
+
+.circles-bg-reseñas .circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.6; 
+    filter: blur(0.5px); 
+}
+
+/* Tamaños */
+.c-size-small { width: 40px; height: 40px; }
+.c-size-medium { width: 70px; height: 70px; }
+.c-size-large { width: 100px; height: 100px; }
+
+/* Colores */
+.c-color-crema { background-color: rgba(248, 228, 203, 0.7); } /* Crema con opacidad */
+.c-color-naranja { background-color: rgba(209, 122, 41, 0.4); } /* Naranja con opacidad */
+
+
+/* Posicionamiento de círculos de Reseñas (Ajustados para más espaciado) */
+.c-offset-tl-1 { top: 5%; left: 70%; } 
+.c-offset-tr-1 { top: 25%; left: 75%; } 
+.c-offset-bl-1 { top: 45%; left: 35%; }
+.c-offset-br-1 { bottom: 5%; right: 15%; } 
+.c-offset-cr-1 { bottom: 15%; right: 25%; }
+
+
+/* ==================== SECCIÓN FORMULARIO ==================== */
+.reseñas-formulario {
+    background-color: var(--color-blanco);
+    position: relative;
+    padding: 8rem 1rem; /* Aumentado el padding vertical */
+    overflow: hidden;
+    text-align: center;
+}
+
+.reseñas-formulario h2 {
+    font-family: var(--fuente-principal);
+    color: var(--color-texto);
+    font-size: 2.2rem;
+    margin-bottom: 5rem; /* Más espacio debajo del título */
+    font-weight: 700;
+    position: relative;
+    z-index: 5;
+}
+
+.formulario-wrapper {
+    position: relative;
+    max-width: 900px; 
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem; 
+}
+
+.formulario-container {
+    background-color: var(--color-fondo-formulario-box); 
+    padding: 4rem; /* Aumentado el padding interno del formulario */
+    border-radius: 20px;
+    max-width: 550px; /* Aumentado el ancho del formulario */
+    width: 100%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    border: 3px solid var(--color-borde-azul); /* Borde azul */
+    position: relative;
+    z-index: 10;
+}
+
+.formulario-container input[type="text"],
+.formulario-container input[type="email"],
+.formulario-container textarea {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 2rem; /* Más espacio entre campos */
+    border: 1px solid #d8d8d8; 
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-family: var(--fuente-principal);
+    font-size: 1rem;
+    color: var(--color-texto);
+    background-color: var(--color-blanco);
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.formulario-container textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.btn-enviar {
+    background-color: var(--color-btn-enviar); 
+    color: var(--color-blanco);
+    border: none;
+    padding: 1rem 3.5rem; /* Aumentado el padding */
+    border-radius: 30px; 
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1.15rem; 
+    transition: background-color 0.3s;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
+}
+
+.btn-enviar:hover {
+    background-color: var(--color-primario);
+}
+
+/* Círculos de fondo para el formulario */
+.circles-bg-formulario {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 5; 
+}
+
+/* Posicionamiento de círculos para el formulario (Ajustados para más espaciado) */
+.c-offset-f-1 { top: 5%; left: 5%; } 
+.c-offset-f-2 { top: 65%; left: 5%; } 
+.c-offset-f-3 { top: 10%; right: 5%; }
+.c-offset-f-4 { bottom: 5%; right: 10%; } 
+
+
+/* ==================== AJUSTES RESPONSIVE ==================== */
+
+@media (max-width: 992px) {
+    /* Ajustamos el espaciado para tablets */
+    .reseñas-clientes {
+        padding: 4rem 1.5rem 6rem 1.5rem;
+    }
+
+    .reseñas-grid {
+        gap: 2rem;
+    }
+    
+    .reseña-card {
+        padding: 1.5rem;
+    }
+
+    /* Deshacer la alineación diagonal en pantallas medianas y pequeñas */
+    .reseñas-grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 500px;
+    }
+    .reseñas-grid > .reseña-card {
+        margin: 0 auto 2rem auto !important; /* Resetea todos los márgenes de posición */
+        max-width: 100%;
+    }
+
+    /* Reducir o desactivar círculos en tablet */
+    .circles-bg-reseñas .circle,
+    .circles-bg-formulario .circle {
+        transform: scale(0.7); 
+        opacity: 0.4; 
+    }
+}
+
+@media (max-width: 768px) {
+    /* Ajustes para móvil */
+    .reseñas-banner {
+        height: 300px; 
+    }
+    .reseñas-clientes {
+        padding: 3rem 1rem 5rem 1rem;
+    }
+    .reseñas-formulario {
+        padding: 4rem 1rem;
+    }
+
+    .banner-content {
+        padding: 2.5rem 4rem;
+    }
+    .banner-content h1 {
+        font-size: 1.8rem;
+    }
+
+    .reseñas-clientes h2,
+    .reseñas-formulario h2 {
+        font-size: 1.6rem;
+        margin-bottom: 3rem;
+    }
+
+    .formulario-container {
+        padding: 2.5rem 1.5rem;
+        max-width: 100%;
+    }
+
+    /* Ocultar completamente algunos círculos en móvil */
+    .circles-bg-reseñas .c-size-large,
+    .circles-bg-formulario .c-size-large {
+        display: none;
+    }
+    
+    .reseña-card .perfil i {
+        font-size: 2.5rem; 
+    }
+}
+
