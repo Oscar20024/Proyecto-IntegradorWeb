@@ -54,21 +54,28 @@ public class SecurityConfig {
     return http.build();
   }
 
-  @Bean
-  CorsConfigurationSource corsConfigurationSource() {
-    var c = new CorsConfiguration();
-    c.setAllowedOrigins(List.of(
-      "http://localhost:8080","http://127.0.0.1:8080",
-      "http://localhost:3000","http://127.0.0.1:3000",
-      "http://localhost:5173","http://localhost:5500"
-    ));
-    c.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
-    c.setAllowedHeaders(List.of("Content-Type","Authorization"));
-    c.setExposedHeaders(List.of("Location","Content-Disposition"));
+@Bean
+CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration c = new CorsConfiguration();
+
+    // 🔹 Para desarrollo: permitir cualquier origen (incluye Railway, GitHub Pages, etc.)
+    c.setAllowedOriginPatterns(List.of("*"));
+
+    // Métodos permitidos
+    c.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+    // Headers correctos (sin espacios)
+    c.setAllowedHeaders(List.of("Content-Type", "Authorization"));
+
+    // Headers que el navegador puede leer
+    c.setExposedHeaders(List.of("Location", "Content-Disposition"));
+
     c.setAllowCredentials(true);
     c.setMaxAge(3600L);
-    var s = new UrlBasedCorsConfigurationSource();
+
+    UrlBasedCorsConfigurationSource s = new UrlBasedCorsConfigurationSource();
     s.registerCorsConfiguration("/**", c);
     return s;
-  }
+}
+
 }
