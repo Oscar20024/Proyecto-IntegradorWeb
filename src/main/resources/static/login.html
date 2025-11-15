@@ -28,16 +28,7 @@
 
     <a href="/registro.html" class="register-link">¿No tienes cuenta? Regístrate</a>
   </div>
-
 <script>
-  // Intenta extraer idCliente del JWT si el backend no lo envía explícito
-  function parseJwt(token){
-    try {
-      const base = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
-      return JSON.parse(atob(base));
-    } catch { return {}; }
-  }
-
   document.getElementById('form-login').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -55,34 +46,25 @@
 
       if (!r.ok) {
         let msg = 'Credenciales inválidas';
-        try { const err = await r.json(); msg = err.message || msg; } catch {}
+        try {
+          const err = await r.json();
+          msg = err.message || msg;
+        } catch {}
         throw new Error(msg);
       }
 
-      const data = await r.json();
+      const data = await r.json();          // { nombre, token, idCliente }
 
-      // Esperamos al menos: { token, nombre?, apellido?, idCliente? }
+      // 🔹 Guardar exactamente lo que necesita el carrito
       localStorage.setItem('token', data.token);
+      localStorage.setItem('idCliente', String(data.idCliente));
+      localStorage.setItem('user', data.nombre || 'Invitado');
 
-      // Nombre a mostrar
-      const nombre   = (data.nombre || '').toString().trim();
-      const apellido = (data.apellido || '').toString().trim();
-      const displayName = (nombre && apellido) ? `${nombre} ${apellido}` :
-                          (nombre || data.email || 'Invitado');
-      localStorage.setItem('user', displayName);
+      // (opcional) borrar caché de pedidos/carrito viejo
+      localStorage.removeItem('pedidoCacheItems');
+      localStorage.removeItem('pedidoCacheMeta');
 
-      // Rol opcional
-      if (data.role) localStorage.setItem('role', data.role);
-
-      // Guardar idCliente (de la respuesta o del JWT)
-      let idC = data.idCliente ?? data.clienteId ?? data.id;
-      if (!idC) {
-        const p = parseJwt(data.token);
-        idC = p.idCliente ?? p.clienteId ?? p.id ?? p.userId ?? p.sub;
-      }
-      if (idC) localStorage.setItem('idCliente', String(idC));
-
-      // Redirigir
+      // Redirigir a inicio / catálogo
       location.href = '/inicio.html';
     } catch (err) {
       const errBox = document.getElementById('err');
@@ -91,5 +73,6 @@
     }
   });
 </script>
+
 </body>
 </html>

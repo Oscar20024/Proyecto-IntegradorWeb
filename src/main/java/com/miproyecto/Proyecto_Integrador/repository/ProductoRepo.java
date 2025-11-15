@@ -3,8 +3,6 @@ package com.miproyecto.Proyecto_Integrador.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.miproyecto.Proyecto_Integrador.model.Producto;
-
-
 import com.miproyecto.Proyecto_Integrador.model.Producto;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,6 +33,4 @@ public interface ProductoRepo extends JpaRepository<Producto, Long> {
  @Lock(LockModeType.PESSIMISTIC_WRITE)
 @Query("select p from Producto p where p.idProducto = :id")
 Optional<Producto> findByIdForUpdate(Long id);
-
-
 }

@@ -1,14 +1,10 @@
 
 package com.miproyecto.Proyecto_Integrador.controller;
-
-
 import com.miproyecto.Proyecto_Integrador.model.Producto;
 import com.miproyecto.Proyecto_Integrador.repository.ProductoRepo;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.*;
 import org.springframework.http.ResponseEntity;
-
 @RestController
 @RequestMapping("/api/public")
 public class ProductoPublicController {
@@ -18,7 +14,6 @@ public class ProductoPublicController {
     public ProductoPublicController(ProductoRepo productoRepo) {
         this.productoRepo = productoRepo;
     }
-
     // === ENDPOINT PARA STOCK (SIN TOKEN) ===
     @GetMapping("/stock/{id}")
     public ResponseEntity<Map<String, Object>> obtenerStockPublico(@PathVariable Long id) {

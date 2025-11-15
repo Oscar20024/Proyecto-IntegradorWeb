@@ -1,16 +1,11 @@
 
 package com.miproyecto.Proyecto_Integrador.service;
-
-
-
 import com.miproyecto.Proyecto_Integrador.repository.ClienteRepo;
 import com.miproyecto.Proyecto_Integrador.model.Cliente;
 import com.miproyecto.Proyecto_Integrador.controller.dto.RegistroDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
-
 @Service
 public class ClienteService {
 
