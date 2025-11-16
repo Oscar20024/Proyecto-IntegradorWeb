@@ -81,6 +81,19 @@
     font-size: 0.9rem;
   }
 
+  /* 🔔 Asegurar que los iconos (campana, usuario, carrito) se vean */
+  .header-icons{
+    display: flex !important;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .icon-btn{
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
+
   /* Estilos VISIBLES de la barra de scroll (solo WebKit: Chrome, Safari, etc.) */
   .main-nav ul::-webkit-scrollbar {
     height: 6px;                  /* grosor */
@@ -96,7 +109,6 @@
   }
 }
 
-
 @media (max-width: 480px) {
   .main-nav ul {
     gap: 0.7rem;
@@ -107,12 +119,13 @@
     font-size: 0.82rem;
   }
 }
+
 /* Color de fondo del header superior (global) */
 .top-header {
-    background-color: var(--color-primario);
+  background-color: var(--color-primario);
 }
 
 /* Color de fondo del menú de navegación (global) */
 .main-header {
-    background-color: var(--color-secundario);
+  background-color: var(--color-secundario);
 }
