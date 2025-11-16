@@ -9,6 +9,7 @@
  <link rel="icon" href="data:;base64,=">
 
   <!-- Tu CSS -->
+  <link rel="stylesheet" href="/css/layout.css">
   <link rel="stylesheet" href="/css/inicio.css" />
 
   <!-- Material Symbols (Google) -->
@@ -93,18 +94,25 @@
 </header>
 
 <!-- NAV MOVIDO DEBAJO DEL HEADER -->
-<nav class="main-nav" id="mainNav">
-  <ul>
-    <li><a href="#" class="active">cxczczcz</a></li>
-    <li><a href="/nosotros.html">Nosotros</a></li>
-    <li><a href="/catalogo.html">Catálogo</a></li>
-    <li><a href="/eventos.html">Eventos</a></li>
-    <li><a href="/contacto.html">Contacto</a></li>
-    <li><a href="/reseñas.html">Reseñas</a></li>
-    <li><a href="/foro.html">Foro</a></li>
-    <li><a href="/puntos.html">Puntos</a></li>
-  </ul>
-</nav>
+<header class="main-header">
+  <!-- Botón hamburguesa (solo móvil) -->
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+  <!-- NAV -->
+  <nav class="main-nav" id="mainNav">
+    <ul>
+      <li><a href="/inicio.html"   class="active">Inicio</a></li>
+      <li><a href="/nosotros.html">Nosotros</a></li>
+      <li><a href="/catalogo.html">Catálogo</a></li>
+      <li><a href="/eventos.html">Eventos</a></li>
+      <li><a href="/contacto.html">Contacto</a></li>
+      <li><a href="/reseñas.html">Reseñas</a></li>
+      <li><a href="/foro.html">Foro</a></li>
+      <li><a href="/puntos.html">Puntos</a></li>
+    </ul>
+  </nav>
+</header>
+
 
 
 

@@ -6,6 +6,7 @@
   <title>Artia Pastelería - Mis Puntos</title>
 
   <!-- CSS base primero -->
+    <link rel="stylesheet" href="/css/layout.css">
   <link rel="stylesheet" href="/css/inicio.css"/>
   <!-- CSS específico después -->
   <link rel="stylesheet" href="/css/puntos.css"/>
@@ -78,20 +79,30 @@
     </div>
   </div>
 </header>
+    
+     <!-- NAV MOVIDO DEBAJO DEL HEADER -->
 
-<nav class="main-nav" id="mainNav">
-  <ul>
-      <li><a href="/inicio.html">Inicio</a></li>
+    <header class="main-header">
+  <!-- Botón hamburguesa (solo móvil) -->
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+  <!-- NAV -->
+  <nav class="main-nav" id="mainNav">
+    <ul>
+       <li><a href="/inicio.html">Inicio</a></li>
       <li><a href="/nosotros.html">Nosotros</a></li>
-      <li><a href="/catalogo.html">Catalogo</a></li>
-    <li><a href="/eventos.html">Eventos</a></li>
-    <li><a href="/contacto.html">Contacto</a></li>
-    <li><a href="/reseñas.html">Reseñas</a></li>
-    <li><a href="/foro.html">Foro</a></li>
-    <li><a href="/puntos.html" class="active">Puntos</a></li>
-  </ul>
-</nav>
-
+       <li><a href="/catalogo.html">Catálogo</a></li>
+       <li><a href="/eventos.html">Eventos</a></li>
+      <li><a href="/contacto.html">Contacto</a></li>
+       <li><a href="/reseñas.html">Reseñas</a></li>
+         <li><a href="/foro.html">Foro</a></li>
+     <li><a href="/puntos.html" class="active">Puntos</a></li>
+    </ul>
+  </nav>
+</header>    
+    
+    
+    
 <main>
   <section class="puntos-dashboard-section">
     <h1 class="puntos-title">TUS PUNTOS <span class="artia-logo-text">Artia</span></h1>

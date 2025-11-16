@@ -6,6 +6,7 @@
   <title>Artia Pastelería - Reseñas</title>
 
   <!-- CSS base primero -->
+    <link rel="stylesheet" href="/css/layout.css">
   <link rel="stylesheet" href="/css/inicio.css"/>
   <!-- CSS específico después (usa /css/resenas.css si tu servidor no acepta ñ) -->
   <link rel="stylesheet" href="/css/reseñas.css"/>
@@ -82,18 +83,31 @@
   </div>
 </header>
 
-<nav class="main-nav" id="mainNav">
-  <ul>
-      <li><a href="/inicio.html">Inicio</a></li>
+
+
+        <!-- NAV MOVIDO DEBAJO DEL HEADER -->
+
+    <header class="main-header">
+  <!-- Botón hamburguesa (solo móvil) -->
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+  <!-- NAV -->
+  <nav class="main-nav" id="mainNav">
+    <ul>
+       <li><a href="/inicio.html">Inicio</a></li>
       <li><a href="/nosotros.html">Nosotros</a></li>
-      <li><a href="/catalogo.html">Catalogo</a></li>
-    <li><a href="/eventos.html">Eventos</a></li>
-    <li><a href="/contacto.html">Contacto</a></li>
-    <li><a href="/reseñas.html" class="active">Reseñas</a></li>
-    <li><a href="/foro.html">Foro</a></li>
-    <li><a href="/puntos.html">Puntos</a></li>
-  </ul>
-</nav>
+       <li><a href="/catalogo.html">Catálogo</a></li>
+       <li><a href="/eventos.html">Eventos</a></li>
+      <li><a href="/contacto.html">Contacto</a></li>
+        <li><a href="/reseñas.html" class="active">Reseñas</a></li>
+      <li><a href="/foro.html">Foro</a></li>
+      <li><a href="/puntos.html">Puntos</a></li>
+    </ul>
+  </nav>
+</header>    
+    
+    
+    
 
 <main class="main-reseñas" id="reseñas">
   <section class="reseñas-banner">

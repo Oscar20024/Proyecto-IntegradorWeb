@@ -1,0 +1,122 @@
+/* =============================== */
+/* 🌍 ESTILOS GLOBAL BASE */
+/* =============================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #fcfbf8;
+  color: #333;
+  font-family: "Poppins", sans-serif;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.main-content {
+  flex: 1;
+}
+
+/* =============================== */
+/* 📱 RESPONSIVE GLOBAL */
+/* =============================== */
+
+@media (max-width: 1024px) {
+  .container { max-width: 900px; }
+}
+
+@media (max-width: 768px) {
+  .container { max-width: 100%; padding: 1rem 0.8rem; }
+}
+
+@media (max-width: 480px) {
+  body.page {
+    font-size: 14px;
+  }
+}
+
+/* =============================== */
+/* 🌐 HEADER + NAVBAR RESPONSIVE */
+/* =============================== */
+
+.main-header {
+  width: 100%;
+  background-color: #ffe7c9;
+  padding: 12px 0;
+  position: relative;
+}
+
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.navbar a {
+  color: #78481e;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 6px 10px;
+}
+
+.navbar a.active {
+  background-color: #78481e;
+  color: white;
+  border-radius: 12px;
+}
+
+/* === Botón hamburguesa (solo MÓVIL) === */
+.menu-btn {
+  display: none;
+  font-size: 28px;
+  color: #78481e;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  right: 1rem;
+  top: 0.8rem;
+}
+
+/* =============================== */
+/* 📱 MODO MÓVIL */
+/* =============================== */
+@media (max-width: 768px) {
+  .menu-btn {
+    display: none;           /* ocultamos el botón por ahora */
+  }
+
+  .main-nav {
+    display: block;          /* menú siempre visible en móvil */
+  }
+
+  .main-nav ul {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 0 0;
+  }
+}
+
+
+/* 🔄 Reset de estilos viejos del menú */
+.main-nav {
+  background: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+}
