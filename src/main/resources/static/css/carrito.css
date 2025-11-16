@@ -465,3 +465,8 @@ h1 i {
         padding: 20px;
     }
 }
+.contenedor-productos {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
