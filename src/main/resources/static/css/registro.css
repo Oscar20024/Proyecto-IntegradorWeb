@@ -185,3 +185,25 @@ form button:hover {
 }
 
 
+.register-box {
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-group input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* MODO CELULAR */
+@media (max-width: 480px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
