@@ -4,26 +4,35 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Artia Pastelería - Contacto</title>
+
+  <!-- Estilos base -->
   <link rel="stylesheet" href="/css/layout.css">
   <link rel="stylesheet" href="/css/inicio.css"/>
   <link rel="stylesheet" href="/css/contacto.css"/>
+
+  <!-- Iconos -->
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
 </head>
 <body>
 
-    
+<!-- HEADER SUPERIOR (igual que inicio/catalogo/eventos) -->
 <header class="top-header">
   <div class="header-top">
-    <a href="/inicio.html" class="logo"><img src="/img/logo.png" alt="Artia Logo"/></a>
+    <a href="/inicio.html" class="logo">
+      <img src="/img/logo.png" alt="Artia Logo"/>
+    </a>
+
     <div class="search-container">
       <span class="material-symbols-outlined" aria-hidden="true">search</span>
       <input type="text" placeholder="¿Qué comemos hoy...?" aria-label="Buscar"/>
     </div>
+
     <div class="header-icons">
       <button class="icon-btn" aria-label="Notificaciones">
         <span class="material-symbols-outlined">notifications</span>
       </button>
+
       <div class="user-wrap">
         <button id="userBtn" class="icon-btn" aria-label="Perfil">
           <span class="material-symbols-outlined">account_circle</span>
@@ -35,6 +44,7 @@
           <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
         </div>
       </div>
+
       <a href="/carrito.html" aria-label="Carrito" class="icon-btn">
         <span class="material-symbols-outlined">shopping_cart</span>
       </a>
@@ -42,42 +52,24 @@
   </div>
 </header>
 
-
-
-        <!-- NAV MOVIDO DEBAJO DEL HEADER -->
-
-    <header class="main-header">
-  <!-- Botón hamburguesa (solo móvil) -->
-  <button class="menu-btn" onclick="toggleMenu()">☰</button>
-
-  <!-- NAV -->
+<!-- NAV DEBAJO DEL HEADER (mismo patrón que las otras páginas) -->
+<header class="main-header">
+ 
   <nav class="main-nav" id="mainNav">
     <ul>
-       <li><a href="/inicio.html">Inicio</a></li>
+      <li><a href="/inicio.html">Inicio</a></li>
       <li><a href="/nosotros.html">Nosotros</a></li>
-       <li><a href="/catalogo.html">Catálogo</a></li>
-       <li><a href="/eventos.html">Eventos</a></li>
-     <li><a href="/contacto.html" class="active">Contacto</a></li>
+      <li><a href="/catalogo.html">Catálogo</a></li>
+      <li><a href="/eventos.html">Eventos</a></li>
+      <li><a href="/contacto.html" class="active">Contacto</a></li>
       <li><a href="/reseñas.html">Reseñas</a></li>
       <li><a href="/foro.html">Foro</a></li>
       <li><a href="/puntos.html">Puntos</a></li>
     </ul>
   </nav>
 </header>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
 <main class="contacto-main" id="contacto">
   <section class="contacto-section">
     <div class="formulario-container">
@@ -112,13 +104,65 @@
     </div>
   </section>
 </main>
+<footer>
+  <div class="footer-container">
+    <div class="footer-col">
+      <h4>ESCRÍBENOS</h4>
+      <p>+51 222 222 222</p>
+      <p>artiapasteleria.com</p>
+      <div class="social-icons">
+        <!-- Íconos genéricos (sin logos de marca) -->
+        <a href="#"><span class="material-symbols-outlined">public</span></a>
+        <a href="#"><span class="material-symbols-outlined">photo_camera</span></a>
+        <a href="#"><span class="material-symbols-outlined">share</span></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>INFORMACIÓN</h4>
+      <a href="#">Términos y condiciones</a>
+      <a href="#">Políticas de Privacidad</a>
+      <a href="#">Libro de Reclamaciones</a>
+    </div>
+    <div class="footer-col footer-logo">
+      <img src="/img/logo2.png" alt="Logo Artia Footer" />
+    </div>
+  </div>
+</footer>
 
+<div class="floating-buttons">
+  <a href="#" aria-label="WhatsApp">
+    <img src="/img/whatsApp.jpg" alt="WhatsApp" />
+  </a>
+
+  <a href="#" aria-label="Chat" id="chatbotToggle">
+    <img src="/img/chatbot.png" alt="Chat" />
+  </a>
+</div>
+
+<!-- 📌 Ventana del Chatbot (queda oculta al inicio) -->
+<div id="chatbotWidget" class="chatbot-widget hidden">
+  <div class="chatbot-header">
+    <span>Artia Bot</span>
+    <button id="chatbotClose" class="chatbot-close">×</button>
+  </div>
+  <div id="chatbotMessages" class="chatbot-messages"></div>
+  <form id="chatbotForm" class="chatbot-input">
+    <input id="chatbotText" type="text" placeholder="Escribe tu mensaje..." autocomplete="off"/>
+    <button type="submit">Enviar</button>
+  </form>
+</div>
 <div id="toast" class="toast" style="
   position:fixed;right:16px;bottom:16px;background:#2e7d32;color:#fff;
   padding:12px 16px;border-radius:8px;display:none;z-index:60;"></div>
 
 <script>
-// --- Funciones base iguales al carrito ---
+// --- toggle menú móvil (igual que en catálogo/eventos)
+function toggleMenu(){
+  const nav = document.getElementById('mainNav');
+  nav.classList.toggle('show');
+}
+
+// --- Toast
 function toast(m, ok=true){
   const t=document.getElementById('toast');
   t.textContent=m; t.style.background=ok?'#2e7d32':'#c62828';
@@ -181,13 +225,321 @@ form.addEventListener('submit', async (e) => {
       body: JSON.stringify(body)
     });
     if (!r.ok) throw new Error('Error al enviar contacto');
-    const res = await r.json();
-    toast(`Mensaje enviado`);
+    await r.json();
+    toast('Mensaje enviado');
     form.reset();
   }catch(err){
     console.error(err);
     toast(err.message || 'Error al enviar', false);
   }
+});
+</script>
+<script>
+function toggleMenu() {
+  const nav = document.getElementById('mainNav');
+  nav.classList.toggle('show');
+}
+</script>
+<script>
+// ==== BUSCADOR GLOBAL CON SUGERENCIAS ====
+(function(){
+  const searchContainer = document.querySelector('.search-container');
+  if (!searchContainer) return;
+
+  const input = searchContainer.querySelector('input');
+  if (!input) return;
+
+  // Caja de sugerencias
+  const box = document.createElement('div');
+  box.className = 'search-suggestions';
+  searchContainer.appendChild(box);
+
+  let allProducts = null;   // caché en memoria
+  let loading = false;
+
+  async function loadProducts() {
+    if (allProducts || loading) return;
+    loading = true;
+    try {
+      const r = await fetch('/api/productos');
+      if (!r.ok) throw 0;
+      allProducts = await r.json();
+    } catch {
+      allProducts = [];
+    } finally {
+      loading = false;
+    }
+  }
+
+  function filtrarProductos(q) {
+    if (!allProducts) return [];
+    const term = q.toLowerCase();
+    if (!term) return [];
+    return allProducts
+      .filter(p => {
+        const nombre = (p.nombre || '').toLowerCase();
+        const desc   = (p.descripcion || '').toLowerCase();
+        return nombre.includes(term) || desc.includes(term);
+      })
+      .slice(0, 5); // máximo 5 sugerencias
+  }
+
+  function mostrarSugerencias(lista, q) {
+    if (!lista.length) {
+      box.style.display = 'none';
+      return;
+    }
+    box.innerHTML = lista.map(p => `
+      <div class="search-suggestion-item" data-nombre="${p.nombre}">
+        <strong>${p.nombre}</strong>
+        <small>S/ ${Number(p.precio).toFixed(2)}</small>
+      </div>
+    `).join('');
+    box.style.display = 'block';
+
+    box.querySelectorAll('.search-suggestion-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const nombre = item.dataset.nombre;
+        input.value = nombre;
+        irACatalogo(nombre);
+      });
+    });
+  }
+
+  function irACatalogo(termino) {
+    const url = '/catalogo.html?q=' + encodeURIComponent(termino);
+
+    // Si ya estamos en catálogo, intentar filtrar sin recargar
+    if (location.pathname.endsWith('/catalogo.html') &&
+        typeof window.aplicarBusquedaCatalogo === 'function') {
+      history.replaceState(null, '', url);
+      window.aplicarBusquedaCatalogo(termino);
+    } else {
+      location.href = url;
+    }
+  }
+
+  // Eventos
+  input.addEventListener('input', async () => {
+    const value = input.value.trim();
+    if (!value) {
+      box.style.display = 'none';
+      return;
+    }
+    await loadProducts();
+    const lista = filtrarProductos(value);
+    mostrarSugerencias(lista, value);
+  });
+
+  input.addEventListener('focus', async () => {
+    const value = input.value.trim();
+    if (!value) return;
+    await loadProducts();
+    const lista = filtrarProductos(value);
+    mostrarSugerencias(lista, value);
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const term = input.value.trim();
+      if (!term) return;
+      box.style.display = 'none';
+      irACatalogo(term);
+    }
+  });
+
+  // Cerrar sugerencias al hacer clic fuera
+  document.addEventListener('click', (e) => {
+    if (!searchContainer.contains(e.target)) {
+      box.style.display = 'none';
+    }
+  });
+})();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const toggleBtn = document.getElementById('chatbotToggle');
+  const closeBtn  = document.getElementById('chatbotClose');
+  const widget    = document.getElementById('chatbotWidget');
+  const form      = document.getElementById('chatbotForm');
+  const input     = document.getElementById('chatbotText');
+  const messages  = document.getElementById('chatbotMessages');
+
+  // ====== 1) Abrir / cerrar ======
+  function openChat() {
+    widget.classList.remove('hidden');
+    input.focus();
+  }
+  function closeChat() {
+    widget.classList.add('hidden');
+  }
+
+  toggleBtn.addEventListener('click', e => {
+    e.preventDefault();
+    widget.classList.contains('hidden') ? openChat() : closeChat();
+  });
+  closeBtn.addEventListener('click', closeChat);
+
+  // ====== 2) Utilidades de mensajes ======
+  function addMessage(text, from = 'bot') {
+    const div = document.createElement('div');
+    div.className = `chatbot-msg ${from}`;
+    div.textContent = text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  // ====== 3) Cargar productos desde tu backend ======
+  let productosCache = [];
+  let ultimasSugerencias = []; // para luego poder "agrega el 1"
+
+  async function cargarProductos() {
+    try {
+      const r = await fetch('/api/productos');
+      if (!r.ok) throw new Error('Error al cargar productos');
+      productosCache = await r.json(); // se espera algo tipo [{idProducto,nombre,precio,imagenUrl,stock},...]
+    } catch (err) {
+      console.error(err);
+      productosCache = [];
+    }
+  }
+
+  // normalizar texto (minúsculas, sin tildes)
+  function normalizar(str) {
+    return (str || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  // buscar productos por texto usando coincidencias simples (pseudo-IA)
+  function buscarProductosPorTexto(texto) {
+    if (!productosCache.length) return [];
+    const q = normalizar(texto);
+    const tokens = q.split(/\s+/).filter(t => t.length > 2);
+
+    const resultados = productosCache.map(p => {
+      const base = normalizar(p.nombre + ' ' + (p.descripcion || '') + ' ' + (p.categoria || ''));
+      let score = 0;
+
+      tokens.forEach(t => {
+        if (base.includes(t)) score += 2;          // coincidencia normal
+        if (base.startsWith(t)) score += 1;        // parecido al comienzo
+      });
+
+      if (q.includes('torta') || q.includes('pastel')) {
+        if (base.includes('torta') || base.includes('pastel')) score += 1;
+      }
+      if (q.includes('chocolate') && base.includes('chocolate')) score += 1;
+      if (q.includes('fresa') && base.includes('fresa')) score += 1;
+
+      return { prod: p, score };
+    });
+
+    return resultados
+      .filter(r => r.score > 0)
+      .sort((a,b) => b.score - a.score)
+      .slice(0, 3)              // top 3 sugerencias
+      .map(r => r.prod);
+  }
+
+  // ====== 4) Intentar agregar producto por índice (1,2,3) ======
+  function intentarAgregarPorIndice(texto) {
+    if (!ultimasSugerencias.length) return false;
+    const t = normalizar(texto);
+    let idx = null;
+
+    if (/primer|primero|1\b/.test(t)) idx = 0;
+    else if (/segundo|2\b/.test(t))   idx = 1;
+    else if (/tercer|tercero|3\b/.test(t)) idx = 2;
+
+    if (idx === null || !ultimasSugerencias[idx]) return false;
+
+    const p = ultimasSugerencias[idx];
+    if (typeof window.addToCart === 'function') {
+      window.addToCart(p.nombre, Number(p.precio), p.imagenUrl || '/img/placeholder.png', p.idProducto);
+      addMessage(`Listo, agregué “${p.nombre}” al carrito 🛒`, 'bot');
+    } else {
+      addMessage(`No encontré la función de carrito, pero te recomiendo “${p.nombre}”.`, 'bot');
+    }
+    return true;
+  }
+
+  // ====== 5) Lógica principal de respuesta "inteligente" ======
+  function generarRespuesta(textoOriginal) {
+    const t = normalizar(textoOriginal);
+
+    // saludos
+    if (/hola|buenas|hey|holaa/.test(t)) {
+      return '¡Hola! Soy Artia Bot 🤖🍰. Puedo ayudarte con productos, recomendaciones y delivery.';
+    }
+
+    // horario
+    if (t.includes('horario') || t.includes('hora') || t.includes('abren') || t.includes('cierran')) {
+      return '🕐 Atendemos de lunes a sábado de 9:00 am a 9:00 pm y domingos de 10:00 am a 7:00 pm.';
+    }
+
+    // delivery
+    if (t.includes('delivery') || t.includes('envio') || t.includes('enviar')) {
+      return '🚚 Hacemos delivery en Ica. El tiempo aproximado es de 40 a 60 minutos según la zona.';
+    }
+
+    // ubicación
+    if (t.includes('donde estan') || t.includes('direccion') || t.includes('ubicacion') || t.includes('ubicación')) {
+      return '📍 Estamos en Av. Lima 123 – Ica (referencia: a media cuadra del parque principal).';
+    }
+
+    // intento de "agrega el 1 / el segundo / el tercero" al carrito
+    if (/agrega|añade|pon en el carrito|agregalo|agrégalo|lo quiero|lo compro/.test(t)) {
+      const ok = intentarAgregarPorIndice(t);
+      if (ok) return null; // ya respondimos dentro de la función
+      // si no se pudo por índice, sigue con recomendación normal
+    }
+
+    // búsqueda de productos según lo que escribe
+    const sugerencias = buscarProductosPorTexto(textoOriginal);
+    if (sugerencias.length) {
+      ultimasSugerencias = sugerencias;
+
+      let msg = 'Según lo que me dices, te podrían gustar:\n';
+      sugerencias.forEach((p, i) => {
+        msg += `\n${i+1}) ${p.nombre} – S/ ${Number(p.precio).toFixed(2)}`;
+        if (p.descripcion) msg += `\n   ${p.descripcion}`;
+      });
+      msg += '\n\nPuedes decirme: "agrega el 1", "agrega el segundo", etc. para ponerlo en el carrito. 🛒';
+      return msg;
+    }
+
+    // preguntas de precios generales
+    if (t.includes('precio') || t.includes('cuanto cuesta') || t.includes('cuánto cuesta')) {
+      return 'Dime qué producto te interesa (por ejemplo: "precio de la torta de chocolate") y te muestro opciones con sus precios.';
+    }
+
+    // fallback
+    return '😊 Soy Artia Bot. Puedo recomendarte tortas, postres, cafés, explicarte nuestro delivery u horario. Pregúntame algo como "recomiéndame una torta de chocolate para 10 personas".';
+  }
+
+  // ====== 6) Carga inicial ======
+  await cargarProductos();
+  addMessage('¡Hola! Soy Artia Bot 🤖🍰 ¿En qué te ayudo hoy?');
+
+  // ====== 7) Enviar mensaje ======
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage(text, 'user');
+    input.value = '';
+
+    setTimeout(() => {
+      const resp = generarRespuesta(text);
+      if (resp) addMessage(resp, 'bot');
+      // si resp es null, fue porque ya se mandó mensaje dentro de intentarAgregarPorIndice
+    }, 350);
+  });
+
 });
 </script>
 

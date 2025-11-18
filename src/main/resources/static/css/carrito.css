@@ -470,3 +470,12 @@ h1 i {
   gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
+.header-inner{
+  max-width: 1000px;       /* igual que .carrito-container */
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 1rem;
+}

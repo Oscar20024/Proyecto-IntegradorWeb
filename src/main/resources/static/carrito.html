@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Carrito de Compras | Artia Pastelería</title>
 
-    <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/inicio.css"/>
   <link rel="stylesheet" href="/css/carrito.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
 
@@ -44,131 +45,227 @@
     .cantidad-control{display:flex;align-items:center;gap:8px}
     .btn-cantidad{padding:4px 10px;border:1px solid #cbb09a;background:#fff;border-radius:6px;cursor:pointer}
     .btn-eliminar{background:#fff;border:1px solid #e57373;color:#c62828;border-radius:6px;padding:6px 10px;cursor:pointer}
+
+    /* ====== CONTENEDOR GLOBAL PARA ALINEAR HEADER + CONTENIDO ====== */
+    body{
+      margin:0;
+      display:block !important; /* por si inicio.css pone flex */
+      background-color:#fffaf3;
+    }
+
+    .page-wrap{
+      max-width:1000px;
+      margin:0 auto;
+      padding:0 16px;
+    }
+
+    .header-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:1rem;
+      padding:0.4rem 0.8rem 0.6rem;
+    }
+
+    /* ====== RESPONSIVE PROPIO DEL CARRITO ====== */
+    @media (max-width: 768px){
+      .carrito-container{
+        padding:10px;
+      }
+
+      .grid-2,
+      .grid-3{
+        grid-template-columns:1fr; /* una sola columna en móvil */
+      }
+
+      .carrito-tabla{
+        display:block;
+        overflow-x:auto; /* scroll horizontal si la tabla se hace muy ancha */
+      }
+
+      .pedido-card{
+        padding:10px;
+      }
+
+      .meta{
+        grid-template-columns:1fr;
+      }
+
+      .header-inner{
+        flex-direction:row;
+        gap:0.5rem;
+      }
+    }
+
+    @media (max-width: 480px){
+      h1{
+        font-size:1.2rem;
+      }
+      .btn{
+        width:100%;
+        text-align:center;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Toast -->
-  <div id="toast" class="toast"></div>
-
-  <div class="carrito-container">
-   <h1><i class="fas fa-shopping-cart"></i> Mi Carrito - 
-  <a href="/inicio.html" style="text-decoration:none; color:inherit; cursor:pointer;">Artia</a>
-</h1>
-
-
-    <table class="carrito-tabla">
-      <thead>
-        <tr><th>Producto</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th></th></tr>
-      </thead>
-      <tbody id="carrito-body"><!-- render dinámico --></tbody>
-    </table>
-
-    <div class="carrito-total">
-      <h3>Total a Pagar: <span id="total-carrito">S/ 0.00</span></h3>
+  <!-- HEADER SUPERIOR (color de fondo desde layout.css) -->
+  <header class="top-header">
+    <div class="page-wrap">
+      <!-- si quieres, aquí va texto de promo o nada -->
     </div>
+  </header>
 
-    <!-- Dirección -->
-    <div class="section-card" id="bloque-envio">
-      <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Dirección de entrega</h2>
-      <div class="grid-3">
-        <div class="field">
-          <label for="envio-distrito">Distrito</label>
-          <select id="envio-distrito">
-            <option value="">Selecciona…</option>
-            <option>Ica</option><option>La Tinguiña</option><option>Los Aquijes</option>
-            <option>Ocucaje</option><option>Pachacútec</option><option>Parcona</option>
-            <option>Pueblo Nuevo</option><option>Salas</option>
-            <option>San José de los Molinos</option><option>San Juan Bautista</option>
-            <option>Santiago</option><option>Subtanjalla</option><option>Tate</option>
-            <option>Yauca del Rosario</option>
-          </select>
+  <!-- HEADER PRINCIPAL CON MENÚ -->
+  <header class="main-header">
+    <div class="page-wrap header-inner">
+      <!-- Logo -->
+      <div class="logo">
+        <a href="/inicio.html" style="text-decoration:none;color:#78481e;font-weight:800;font-size:1.1rem;">
+        </a>
+      </div>
+
+      <!-- Menú principal (usa layout.css para responsive) -->
+      <nav class="main-nav">
+        <ul>
+          <li><a href="/inicio.html">Inicio</a></li>
+          <li><a href="/catalogo.html">Catálogo</a></li>
+          <li><a href="/carrito.html" class="active">Carrito</a></li>
+        </ul>
+      </nav>
+
+     
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL ALINEADO CON EL HEADER -->
+  <main>
+    <div class="page-wrap">
+
+      <!-- Toast -->
+      <div id="toast" class="toast"></div>
+
+      <div class="carrito-container">
+        <h1><i class="fas fa-shopping-cart"></i> Mi Carrito -
+          <a href="/inicio.html" style="text-decoration:none; color:inherit; cursor:pointer;">Artia</a>
+        </h1>
+
+        <table class="carrito-tabla">
+          <thead>
+            <tr><th>Producto</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th></th></tr>
+          </thead>
+          <tbody id="carrito-body"><!-- render dinámico --></tbody>
+        </table>
+
+        <div class="carrito-total">
+          <h3>Total a Pagar: <span id="total-carrito">S/ 0.00</span></h3>
         </div>
-        <div class="field">
-          <label for="envio-direccion">Dirección</label>
-          <input id="envio-direccion" type="text" placeholder="Ej. Av. Lima 123"/>
+
+        <!-- Dirección -->
+        <div class="section-card" id="bloque-envio">
+          <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Dirección de entrega</h2>
+          <div class="grid-3">
+            <div class="field">
+              <label for="envio-distrito">Distrito</label>
+              <select id="envio-distrito">
+                <option value="">Selecciona…</option>
+                <option>Ica</option><option>La Tinguiña</option><option>Los Aquijes</option>
+                <option>Ocucaje</option><option>Pachacútec</option><option>Parcona</option>
+                <option>Pueblo Nuevo</option><option>Salas</option>
+                <option>San José de los Molinos</option><option>San Juan Bautista</option>
+                <option>Santiago</option><option>Subtanjalla</option><option>Tate</option>
+                <option>Yauca del Rosario</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="envio-direccion">Dirección</label>
+              <input id="envio-direccion" type="text" placeholder="Ej. Av. Lima 123"/>
+            </div>
+            <div class="field">
+              <label for="envio-referencia">Referencia</label>
+              <input id="envio-referencia" type="text" placeholder="Frente al parque…"/>
+            </div>
+            <!-- Comentarios -->
+            <div class="field" style="grid-column:1 / -1">
+              <label for="envio-coment">Comentarios</label>
+              <textarea id="envio-coment" rows="3" placeholder="…"></textarea>
+            </div>
+          </div>
+          <small class="hint">Se envía junto al pedido.</small>
         </div>
-        <div class="field">
-          <label for="envio-referencia">Referencia</label>
-          <input id="envio-referencia" type="text" placeholder="Frente al parque…"/>
+
+        <!-- Programar -->
+        <div class="section-card">
+          <h2 class="section-title"><i class="fas fa-calendar-check"></i> ¿Deseas programar la entrega?</h2>
+          <div>
+            <label><input type="radio" name="prog" value="no" checked> No</label>
+            &nbsp;&nbsp;
+            <label><input type="radio" name="prog" value="si"> Sí</label>
+          </div>
+          <div id="prog-fields" style="margin-top:10px;display:none">
+            <div class="grid-2">
+              <div class="field"><label>Fecha</label><input type="date" id="fecha-entrega"/></div>
+              <div class="field"><label>Hora</label><input type="time" id="hora-entrega"/></div>
+            </div>
+            <small class="hint">Si no eliges fecha/hora, será entrega estándar.</small>
+          </div>
         </div>
-        <!-- Comentarios -->
-        <div class="field" style="grid-column:1 / -1">
-          <label for="envio-coment">Comentarios</label>
-          <textarea id="envio-coment" rows="3" placeholder="…"></textarea>
+
+        <!-- Pago -->
+        <div class="section-card">
+          <h2 class="section-title"><i class="fas fa-hand-holding-usd"></i> Elige tu Método de Pago</h2>
+          <div class="grid-2">
+            <div class="section-card" style="margin:0">
+              <h4><i class="fas fa-university"></i> Transferencia (BCP/Interbank)</h4><hr/>
+              <p><strong>BCP:</strong>00238017822660403348</p>
+              <p><strong>Interbank:</strong> 098-76543210-9-87</p>
+              <p><strong>Titular:</strong> Oscar Gutierrez Rojas</p>
+              <button class="btn btn-outline" id="btn-transferencia">Subir comprobante</button>
+            </div>
+            <div class="section-card" style="margin:0">
+              <h4><i class="fas fa-mobile-alt"></i> Yape/Plin</h4><hr/>
+              <p><strong>Celular:</strong> 914 551 726 </p>
+              <img src="/img/qr.jpeg" alt="QR Yape/Plin" style="max-width:200px;border-radius:10px"/>
+              <div><small>Escanéa el QR y luego sube tu captura.</small></div>
+              <button class="btn btn-outline" id="btn-yape">Subir comprobante</button>
+            </div>
+          </div>
+          <div style="margin-top:14px">
+            <button id="btn-confirmar" class="btn btn-primary" disabled>Confirmar Pedido</button>
+          </div>
+          <small class="hint">El pago quedará <b>EN_REVISION</b> hasta validación interna.</small>
+        </div>
+
+        <!-- Pedidos (desde BD) -->
+        <div class="section-card">
+          <h2 class="section-title"><i class="fas fa-receipt"></i> Pedidos</h2>
+          <div id="historial-list"><small>Cargando…</small></div>
         </div>
       </div>
-      <small class="hint">Se envía junto al pedido.</small>
-    </div>
 
-    <!-- Programar -->
-    <div class="section-card">
-      <h2 class="section-title"><i class="fas fa-calendar-check"></i> ¿Deseas programar la entrega?</h2>
-      <div>
-        <label><input type="radio" name="prog" value="no" checked> No</label>
-        &nbsp;&nbsp;
-        <label><input type="radio" name="prog" value="si"> Sí</label>
-      </div>
-      <div id="prog-fields" style="margin-top:10px;display:none">
-        <div class="grid-2">
-          <div class="field"><label>Fecha</label><input type="date" id="fecha-entrega"/></div>
-          <div class="field"><label>Hora</label><input type="time" id="hora-entrega"/></div>
-        </div>
-        <small class="hint">Si no eliges fecha/hora, será entrega estándar.</small>
-      </div>
-    </div>
-
-    <!-- Pago -->
-    <div class="section-card">
-      <h2 class="section-title"><i class="fas fa-hand-holding-usd"></i> Elige tu Método de Pago</h2>
-      <div class="grid-2">
-        <div class="section-card" style="margin:0">
-          <h4><i class="fas fa-university"></i> Transferencia (BCP/Interbank)</h4><hr/>
-          <p><strong>BCP:</strong>00238017822660403348</p>
-          <p><strong>Interbank:</strong> 098-76543210-9-87</p>
-          <p><strong>Titular:</strong> Oscar Gutierrez Rojas</p>
-          <button class="btn btn-outline" id="btn-transferencia">Subir comprobante</button>
-        </div>
-        <div class="section-card" style="margin:0">
-          <h4><i class="fas fa-mobile-alt"></i> Yape/Plin</h4><hr/>
-          <p><strong>Celular:</strong> 914 551 726 </p>
-          <img src="/img/qr.jpeg" alt="QR Yape/Plin" style="max-width:200px;border-radius:10px"/>
-          <div><small>Escanéa el QR y luego sube tu captura.</small></div>
-          <button class="btn btn-outline" id="btn-yape">Subir comprobante</button>
+      <!-- Modal Transferencia -->
+      <div id="modal-transf" class="modal" aria-hidden="true">
+        <div class="modal-box">
+          <div class="modal-header"><h3><i class="fas fa-university"></i> Transferencia</h3><span class="close" data-close="modal-transf">&times;</span></div>
+          <p><strong>Subir una imagen de su transferencia</strong></p>
+          <div class="uploader"><input type="file" id="file-transf" accept="image/*"/><small>JPG/PNG (máx. 5MB)</small></div>
+          <div style="text-align:right;margin-top:12px"><button class="btn btn-primary" id="guardar-transf">Guardar</button></div>
         </div>
       </div>
-      <div style="margin-top:14px">
-        <button id="btn-confirmar" class="btn btn-primary" disabled>Confirmar Pedido</button>
+
+      <!-- Modal Yape/Plin -->
+      <div id="modal-yape" class="modal" aria-hidden="true">
+        <div class="modal-box">
+          <div class="modal-header"><h3><i class="fas a-mobile-alt"></i> Yape/Plin</h3><span class="close" data-close="modal-yape">&times;</span></div>
+          <p><strong>Subir una imagen de su transferencia</strong></p>
+          <div class="uploader"><input type="file" id="file-yape" accept="image/*"/><small>JPG/PNG (máx. 5MB)</small></div>
+          <div style="text-align:right;margin-top:12px"><button class="btn btn-primary" id="guardar-yape">Guardar</button></div>
+        </div>
       </div>
-      <small class="hint">El pago quedará <b>EN_REVISION</b> hasta validación interna.</small>
-    </div>
 
-    <!-- Pedidos (desde BD) -->
-    <div class="section-card">
-      <h2 class="section-title"><i class="fas fa-receipt"></i> Pedidos</h2>
-      <div id="historial-list"><small>Cargando…</small></div>
     </div>
-  </div>
-
-  <!-- Modal Transferencia -->
-  <div id="modal-transf" class="modal" aria-hidden="true">
-    <div class="modal-box">
-      <div class="modal-header"><h3><i class="fas fa-university"></i> Transferencia</h3><span class="close" data-close="modal-transf">&times;</span></div>
-      <p><strong>Subir una imagen de su transferencia</strong></p>
-      <div class="uploader"><input type="file" id="file-transf" accept="image/*"/><small>JPG/PNG (máx. 5MB)</small></div>
-      <div style="text-align:right;margin-top:12px"><button class="btn btn-primary" id="guardar-transf">Guardar</button></div>
-    </div>
-  </div>
-
-  <!-- Modal Yape/Plin -->
-  <div id="modal-yape" class="modal" aria-hidden="true">
-    <div class="modal-box">
-      <div class="modal-header"><h3><i class="fas a-mobile-alt"></i> Yape/Plin</h3><span class="close" data-close="modal-yape">&times;</span></div>
-      <p><strong>Subir una imagen de su transferencia</strong></p>
-      <div class="uploader"><input type="file" id="file-yape" accept="image/*"/><small>JPG/PNG (máx. 5MB)</small></div>
-      <div style="text-align:right;margin-top:12px"><button class="btn btn-primary" id="guardar-yape">Guardar</button></div>
-    </div>
-  </div>
+  </main>
 
 <script>
 // ---------- fetch con Authorization (global) ----------
