@@ -31,7 +31,7 @@
 
 <header class="top-header">
   <div class="header-top">
-    <a href="#" class="logo">
+    <a href="/inicio.html" class="logo">
       <img src="/img/logo.png" alt="Artia Logo" />
     </a>
 
@@ -60,20 +60,14 @@
         </div>
       </div>
 
-      <a href="/carrito.html">
-        <button class="icon-btn" aria-label="Carrito">
-          <span class="material-symbols-outlined">shopping_cart</span>
-        </button>
+      <a href="/carrito.html" aria-label="Carrito" class="icon-btn">
+        <span class="material-symbols-outlined">shopping_cart</span>
       </a>
     </div>
   </div>
 </header>
 
-
-<!-- NAV DEBAJO DEL HEADER -->
 <header class="main-header">
-  <!-- Botón hamburguesa en móvil -->
-
   <nav class="main-nav" id="mainNav">
     <ul>
       <li><a href="/inicio.html">Inicio</a></li>
@@ -87,7 +81,6 @@
     </ul>
   </nav>
 </header>
-
 
 <main>
   <section class="foro-intro-section">
@@ -109,21 +102,12 @@
     </div>
   </section>
 
-
   <section class="foro-chat-area">
     <div class="chat-main-container">
-      
       <div class="users-online-area">
         <h2 class="online-title">Usuarios Conectados</h2>
         <ul class="user-list" id="userList">
-          <li class="user-item user-active">
-            <i class="fas fa-circle active-dot"></i>
-            <span id="onlineUserAlias">@MiAlias_Artia</span> (Tú)
-          </li>
-          <li class="user-item"><i class="fas fa-circle active-dot"></i> Dulce_Vida</li>
-          <li class="user-item"><i class="fas fa-circle active-dot"></i> ElGourmet</li>
-          <li class="user-item"><i class="fas fa-circle active-dot"></i> Pastelero23</li>
-          <li class="user-item user-away"><i class="fas fa-circle active-dot away-dot"></i> FanDeKeyLime</li>
+          <!-- se rellena dinámicamente -->
         </ul>
       </div>
 
@@ -131,41 +115,17 @@
         <div id="chatNotification" class="chat-notification"></div>
 
         <div class="messages-history" id="messagesHistory">
-          <div class="message-item">
-            <span class="chat-alias">Dulce_Vida:</span>
-            ¡Hola a todos! 🍋✨
-          </div>
+          <!-- mensajes del servidor -->
         </div>
 
         <div class="chat-input-area">
           <input type="text" id="chatInput" placeholder="Escribe tu mensaje aquí..."/>
           <button type="button" class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
         </div>
-
       </div>
     </div>
   </section>
-
 </main>
-
-
-<footer>
-  <div class="footer-container">
-    <div class="footer-col">
-      <h4>ESCRÍBENOS</h4>
-      <p>+51 222 222 222</p>
-      <p>artiapasteleria.com</p>
-    </div>
-    <div class="footer-col">
-      <h4>INFORMACIÓN</h4>
-      <a href="#">Términos y condiciones</a>
-      <a href="#">Privacidad</a>
-    </div>
-    <div class="footer-col footer-logo">
-      <img src="/img/logo2.png" alt="Logo Artia Footer"/>
-    </div>
-  </div>
-</footer>
 
 <footer>
   <div class="footer-container">
@@ -174,7 +134,6 @@
       <p>+51 222 222 222</p>
       <p>artiapasteleria.com</p>
       <div class="social-icons">
-        <!-- Íconos genéricos (sin logos de marca) -->
         <a href="#"><span class="material-symbols-outlined">public</span></a>
         <a href="#"><span class="material-symbols-outlined">photo_camera</span></a>
         <a href="#"><span class="material-symbols-outlined">share</span></a>
@@ -202,7 +161,7 @@
   </a>
 </div>
 
-<!-- 📌 Ventana del Chatbot (queda oculta al inicio) -->
+<!-- Chatbot igual que en otras páginas (no lo toco) -->
 <div id="chatbotWidget" class="chatbot-widget hidden">
   <div class="chatbot-header">
     <span>Artia Bot</span>
@@ -217,9 +176,10 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // ========= SESIÓN / MENÚ USUARIO =========
+  // ===== SESIÓN / MENÚ USUARIO =====
   const token = localStorage.getItem('token');
   const user  = localStorage.getItem('user');
+
   const userBtn = document.getElementById('userBtn');
   const userMenu = document.getElementById('userMenu');
   const userName = document.getElementById('userName');
@@ -250,7 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // fetch autenticado común
   window.authFetch = (url, opt = {}) => {
     const t = localStorage.getItem('token');
     const headers = { ...(opt.headers || {}) };
@@ -258,156 +217,172 @@ document.addEventListener('DOMContentLoaded', () => {
     return fetch(url, { ...opt, headers });
   };
 
-  // ========= NAV + HAMBURGUESA =========
+  // ===== NAV =====
   const navLinks = document.querySelectorAll('.main-nav a');
   navLinks.forEach(a => a.addEventListener('click', function () {
     navLinks.forEach(n => n.classList.remove('active'));
     this.classList.add('active');
   }));
-  const hamburgerBtn = document.getElementById('hamburgerBtn');
-  const mainNav = document.getElementById('mainNav');
-  if (hamburgerBtn && mainNav) {
-    hamburgerBtn.addEventListener('click', () => mainNav.classList.toggle('show'));
+
+ // ===== CHAT FORO =====
+const sendBtn = document.getElementById('sendBtn');
+const chatInput = document.getElementById('chatInput');
+const messagesHistory = document.getElementById('messagesHistory');
+const chatNotification = document.getElementById('chatNotification');
+const userList = document.getElementById('userList');
+
+const aliasInput = document.getElementById('aliasInput');
+const saveAliasBtn = document.getElementById('saveAliasBtn');
+const currentAliasDisplay = document.getElementById('currentAlias');
+
+const DEFAULT_ALIAS = '@MiAlias_Artia';
+
+// alias actual
+let userAlias = sessionStorage.getItem('artia_alias') || DEFAULT_ALIAS;
+// historial de alias de ESTA pestaña
+let aliasHistory = JSON.parse(sessionStorage.getItem('artia_alias_history') || '[]');
+
+currentAliasDisplay.textContent = userAlias;
+
+function showNotification(message) {
+  chatNotification.textContent = message;
+  chatNotification.classList.add('show');
+  setTimeout(() => chatNotification.classList.remove('show'), 3000);
+}
+
+function guardarHistorial() {
+  sessionStorage.setItem('artia_alias_history', JSON.stringify(aliasHistory));
+}
+
+function updateAlias(newAlias) {
+  let clean = newAlias.trim();
+  if (!clean) return;
+  if (!clean.startsWith('@')) clean = '@' + clean;
+  clean = clean.replace(/\s+/g, '_').substring(0, 15);
+
+  // guardamos el alias anterior en el historial (si no está)
+  if (!aliasHistory.includes(userAlias)) {
+    aliasHistory.push(userAlias);
+    guardarHistorial();
   }
 
-  // ========= CHAT / ALIAS =========
-  const sendBtn = document.getElementById('sendBtn');
-  const chatInput = document.getElementById('chatInput');
-  const messagesHistory = document.getElementById('messagesHistory');
-  const chatNotification = document.getElementById('chatNotification');
+  userAlias = clean;
+  sessionStorage.setItem('artia_alias', userAlias);
 
-  const aliasInput = document.getElementById('aliasInput');
-  const saveAliasBtn = document.getElementById('saveAliasBtn');
-  const currentAliasDisplay = document.getElementById('currentAlias');
-  const onlineUserAliasDisplay = document.getElementById('onlineUserAlias');
-
-  // Alias de sesión (solo pestaña/ventana actual)
-  const DEFAULT_ALIAS = '@MiAlias_Artia';
-  let userAlias = sessionStorage.getItem('artia_alias') || DEFAULT_ALIAS;
-
-  function showNotification(message) {
-    chatNotification.textContent = message;
-    chatNotification.classList.add('show');
-    setTimeout(() => chatNotification.classList.remove('show'), 3000);
-  }
-
-  function applyAliasToOwnMessages() {
-    // Actualiza el alias visible en mensajes propios existentes
-    document.querySelectorAll('.self-message .message-content .chat-alias').forEach(span => {
-      span.textContent = userAlias + ':';
-    });
-  }
-
-  function updateAlias(newAlias) {
-    const clean = (newAlias.startsWith('@') ? newAlias : '@' + newAlias)
-      .trim().replace(/\s+/g, '_').substring(0, 15);
-    userAlias = clean || DEFAULT_ALIAS;
-    sessionStorage.setItem('artia_alias', userAlias);
-    currentAliasDisplay.textContent = userAlias;
-    onlineUserAliasDisplay.textContent = userAlias;
-    aliasInput.value = '';
-    applyAliasToOwnMessages();
-    showNotification(`Alias actualizado a: ${userAlias}`);
-  }
-
-  // Estado inicial alias en UI
   currentAliasDisplay.textContent = userAlias;
-  onlineUserAliasDisplay.textContent = userAlias;
-  applyAliasToOwnMessages();
+  aliasInput.value = '';
+  showNotification('Alias actualizado a: ' + userAlias);
+}
 
-  saveAliasBtn.addEventListener('click', () => {
-    const value = aliasInput.value.trim();
-    if (!value) return showNotification('Ingresa un alias válido.');
-    updateAlias(value);
-  });
+saveAliasBtn.addEventListener('click', () => {
+  const value = aliasInput.value.trim();
+  if (!value) return showNotification('Ingresa un alias válido.');
+  updateAlias(value);
+});
 
-  // ========= EDITAR / ELIMINAR MENSAJES (solo propios) =========
-  let editingMessage = null;
+// ===== MENSAJES (igual que antes) =====
+let lastMessageId = 0;
 
-  function editComment(messageElement) {
-    if (!messageElement.classList.contains('self-message')) {
-      return showNotification('Solo puedes editar tus mensajes.');
-    }
-    if (editingMessage && editingMessage !== messageElement) {
-      return showNotification('Termina de editar el mensaje actual.');
-    }
-    const originalText = messageElement.getAttribute('data-text') || '';
-    chatInput.value = originalText;
-    chatInput.focus();
-    editingMessage = messageElement;
-    messageElement.classList.add('is-editing');
-    sendBtn.innerHTML = '<i class="fas fa-check"></i>';
-    sendBtn.classList.add('editing');
-    sendBtn.title = 'Guardar Edición';
+function addMessageToDom(m) {
+  const wrap = document.createElement('div');
+  wrap.classList.add('message-item');
+  if (m.alias === userAlias) wrap.classList.add('self-message');
+  wrap.innerHTML = `<span class="chat-alias">${m.alias}:</span> ${m.contenido}`;
+  messagesHistory.appendChild(wrap);
+}
+
+async function loadMessages(initial = false) {
+  try {
+    const url = lastMessageId
+      ? `/api/foro/mensajes?desdeId=${lastMessageId}`
+      : '/api/foro/mensajes';
+    const r = await authFetch(url);
+    if (!r.ok) throw new Error('Error mensajes');
+    const data = await r.json();
+    if (!Array.isArray(data) || !data.length) return;
+    data.forEach(addMessageToDom);
+    lastMessageId = data[data.length - 1].idMensaje;
+    messagesHistory.scrollTop = messagesHistory.scrollHeight;
+  } catch (e) {
+    console.error(e);
   }
+}
 
-  function deleteComment(messageElement) {
-    if (!messageElement.classList.contains('self-message')) {
-      return showNotification('Solo puedes eliminar tus mensajes.');
+// ===== USUARIOS CONECTADOS =====
+async function loadUsers() {
+  try {
+    const r = await authFetch('/api/foro/usuarios');
+    if (!r.ok) throw new Error('Error usuarios');
+    const lista = await r.json();
+
+    userList.innerHTML = '';
+
+    const ocultar = new Set(aliasHistory);   // todos mis alias viejos
+    const yaMostrados = new Set();
+
+    lista.forEach(u => {
+      const alias = u.alias;
+
+      // si es un alias viejo mío, NO lo muestro
+      if (ocultar.has(alias)) return;
+
+      if (yaMostrados.has(alias)) return;
+      yaMostrados.add(alias);
+
+      const li = document.createElement('li');
+      li.className = 'user-item';
+      const esYo = (alias === userAlias);
+      if (esYo) li.classList.add('user-active');
+      li.innerHTML = `<i class="fas fa-circle active-dot"></i> ${alias}${esYo ? ' (Tú)' : ''}`;
+      userList.appendChild(li);
+    });
+
+    // si por alguna razón el servidor aún no devuelve mi alias actual, me agrego
+    if (!yaMostrados.has(userAlias)) {
+      const li = document.createElement('li');
+      li.className = 'user-item user-active';
+      li.innerHTML = `<i class="fas fa-circle active-dot"></i> ${userAlias} (Tú)`;
+      userList.prepend(li);
     }
-    if (confirm('¿Eliminar este comentario?')) {
-      if (editingMessage === messageElement) {
-        editingMessage = null;
-        chatInput.value = '';
-        sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
-        sendBtn.classList.remove('editing');
-        sendBtn.title = 'Enviar';
-      }
-      messageElement.classList.add('is-deleted');
-      setTimeout(() => {
-        messageElement.remove();
-        showNotification('Comentario eliminado.');
-      }, 300);
-    }
+  } catch (e) {
+    console.error(e);
   }
+}
 
-  messagesHistory.addEventListener('click', (e) => {
-    const btn = e.target;
-    if (btn.classList.contains('edit-btn')) {
-      editComment(btn.closest('.message-item'));
-    } else if (btn.classList.contains('delete-btn')) {
-      deleteComment(btn.closest('.message-item'));
-    }
-  });
 
-  // ========= ENVIAR MENSAJE =========
-  function sendMessage() {
+
+  // ===== ENVIAR MENSAJE =====
+  async function sendMessage() {
     const text = chatInput.value.trim();
     if (!text) return;
-
-    if (editingMessage) {
-      const contentDiv = editingMessage.querySelector('.message-content');
-      contentDiv.innerHTML = `<span class="chat-alias">${userAlias}:</span> ${text} <small class="edited-label">(Editado)</small>`;
-      editingMessage.setAttribute('data-text', text);
-      editingMessage.classList.remove('is-editing');
-      editingMessage = null;
-      sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
-      sendBtn.classList.remove('editing');
-      sendBtn.title = 'Enviar';
-      showNotification('Comentario editado con éxito.');
-    } else {
-      const wrap = document.createElement('div');
-      wrap.classList.add('message-item', 'self-message');
-      wrap.setAttribute('data-text', text);
-      wrap.innerHTML = `
-        <div class="message-content">
-          <span class="chat-alias">${userAlias}:</span> ${text}
-        </div>
-        <div class="message-actions">
-          <i class="fas fa-pen-to-square edit-btn" title="Editar"></i>
-          <i class="fas fa-trash-can delete-btn" title="Eliminar"></i>
-        </div>
-      `;
-      wrap.style.opacity = '0';
-      messagesHistory.appendChild(wrap);
-      setTimeout(() => { wrap.style.opacity = '1'; }, 50);
+    if (!localStorage.getItem('token')) {
+      alert('Debes iniciar sesión para usar el foro.');
+      location.href = '/login.html';
+      return;
     }
-
-    chatInput.value = '';
-    messagesHistory.scrollTop = messagesHistory.scrollHeight;
+    try {
+      const body = { alias: userAlias, contenido: text };
+      const r = await authFetch('/api/foro/mensajes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (!r.ok) {
+        showNotification('No se pudo enviar el mensaje.');
+        return;
+      }
+      chatInput.value = '';
+      // esperamos al próximo polling para verlo,
+      // o cargamos inmediatamente los nuevos:
+      await loadMessages(false);
+      await loadUsers();
+    } catch (e) {
+      console.error(e);
+      showNotification('Error de conexión.');
+    }
   }
 
-  document.getElementById('sendBtn').addEventListener('click', sendMessage);
+  sendBtn.addEventListener('click', sendMessage);
   chatInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -415,11 +390,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Auto-scroll al final al cargar
-  messagesHistory.scrollTop = messagesHistory.scrollHeight;
+  // Carga inicial y polling
+  loadMessages(true);
+  loadUsers();
+  setInterval(() => {
+    loadMessages(false);
+    loadUsers();
+  }, 3000); // cada 3 segundos
 });
 </script>
 
+<!-- Buscador global + chatbot: dejo exactamente igual que en tus otras páginas -->
 <script>
 // ==== BUSCADOR GLOBAL CON SUGERENCIAS ====
 (function(){

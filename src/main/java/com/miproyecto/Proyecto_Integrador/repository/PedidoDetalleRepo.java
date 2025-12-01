@@ -17,4 +17,24 @@ import org.springframework.stereotype.Repository;
 public interface PedidoDetalleRepo extends JpaRepository<PedidoDetalle, Long> {
   @Query("select d from PedidoDetalle d where d.pedido.idPedido = :pedidoId")
   List<PedidoDetalle> findByPedidoId(@Param("pedidoId") Long pedidoId);
+  
+  
+  
+   @Query("""
+      select distinct d.idProducto
+      from PedidoDetalle d
+      where d.pedido.idCliente = :clienteId
+        and d.pedido.estado = :estado
+      """)
+  List<Long> findIdsProductosEntregados(
+      @Param("clienteId") Long clienteId,
+      @Param("estado") String estado
+  );
+
+  // NUEVO: validar que el cliente compró ese producto en un pedido ENTREGADO
+  boolean existsByPedido_IdClienteAndPedido_EstadoAndIdProducto(
+      Long idCliente,
+      String estado,
+      Long idProducto
+  );
 }

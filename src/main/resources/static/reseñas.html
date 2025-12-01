@@ -81,7 +81,6 @@
 
 <!-- NAV DEBAJO DEL HEADER -->
 <header class="main-header">
-  <!-- Botón hamburguesa solo móvil -->
   <nav class="main-nav" id="mainNav">
     <ul>
       <li><a href="/inicio.html">Inicio</a></li>
@@ -169,6 +168,12 @@
       <div id="formContainerWrapper" class="formulario-container">
         <form id="reviewForm" novalidate>
           <input type="text" id="reviewName" name="nombre" placeholder="Nombre (o alias)" required/>
+
+          <!-- 🔽 NUEVO: seleccionar producto entregado -->
+          <select id="reviewProduct" required>
+            <option value="">Selecciona un producto entregado...</option>
+          </select>
+
           <input type="email" name="email" placeholder="Correo Electrónico" required/>
           <textarea id="reviewComment" name="comentario" rows="4" placeholder="Tu comentario . . ." required></textarea>
 
@@ -187,8 +192,6 @@
   </section>
 </main>
 
-
-
 <div class="floating-buttons">
   <a href="#" aria-label="WhatsApp"><img src="/img/whatsApp.jpg" alt="WhatsApp"/></a>
   <a href="#" aria-label="Chat"><img src="/img/chatbot.png" alt="Chat"/></a>
@@ -200,7 +203,6 @@
       <p>+51 222 222 222</p>
       <p>artiapasteleria.com</p>
       <div class="social-icons">
-        <!-- Íconos genéricos (sin logos de marca) -->
         <a href="#"><span class="material-symbols-outlined">public</span></a>
         <a href="#"><span class="material-symbols-outlined">photo_camera</span></a>
         <a href="#"><span class="material-symbols-outlined">share</span></a>
@@ -228,7 +230,7 @@
   </a>
 </div>
 
-<!-- 📌 Ventana del Chatbot (queda oculta al inicio) -->
+<!-- 📌 Ventana del Chatbot -->
 <div id="chatbotWidget" class="chatbot-widget hidden">
   <div class="chatbot-header">
     <span>Artia Bot</span>
@@ -240,9 +242,10 @@
     <button type="submit">Enviar</button>
   </form>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // ======= SESIÓN / MENÚ USUARIO (misma lógica del sitio) =======
+  // ======= SESIÓN / MENÚ USUARIO =======
   const token = localStorage.getItem('token');
   const user  = localStorage.getItem('user');
   const isLoggedIn = Boolean(token);
@@ -278,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // fetch autenticado común
+  // fetch autenticado
   window.authFetch = (url, opt = {}) => {
     const t = localStorage.getItem('token');
     const headers = { ...(opt.headers || {}) };
@@ -286,7 +289,32 @@ document.addEventListener('DOMContentLoaded', () => {
     return fetch(url, { ...opt, headers });
   };
 
-  // ======= NAV activo (visual) + hamburguesa =======
+  // ======= JWT → idCliente =======
+  function parseJwt(token){
+    try{
+      const base = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+      return JSON.parse(atob(base));
+    }catch{ return {}; }
+  }
+
+  window.ensureClienteId = async () => {
+    const cached = +localStorage.getItem('idCliente') || 0;
+    if (cached) return cached;
+
+    const t = localStorage.getItem('token');
+    if (t) {
+      const p = parseJwt(t);
+      const fromJwt = p.idCliente ?? p.clienteId ?? p.id ?? 0;
+      if (fromJwt) {
+        localStorage.setItem('idCliente', String(fromJwt));
+        return fromJwt;
+      }
+    }
+    alert('Debes iniciar sesión para reseñar productos.');
+    return 0;
+  };
+
+  // ======= NAV activo =======
   const navLinks = document.querySelectorAll('.main-nav a');
   navLinks.forEach(a => a.addEventListener('click', function () {
     navLinks.forEach(n => n.classList.remove('active'));
@@ -303,6 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const newReviewRatingContainer = document.querySelector('.new-review-rating');
   const reseñasGrid = document.getElementById('reseñasGrid');
   const reviewForm = document.getElementById('reviewForm');
+  const reviewProductSelect = document.getElementById('reviewProduct');
 
   function generateStarsHtml(rating) {
     let html = '';
@@ -326,9 +355,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ======= CRUD reseñas =======
+  // ======= CARGAR PRODUCTOS ENTREGADOS =======
+  async function cargarProductosParaResena() {
+    const idCliente = await window.ensureClienteId();
+    if (!idCliente) return;
+
+    try {
+      const r = await authFetch(`/api/resenas/opciones?clienteId=${idCliente}`);
+      if (!r.ok) throw new Error('No se pudieron cargar los productos');
+      const lista = await r.json();
+
+      if (!lista.length) {
+        reviewProductSelect.innerHTML =
+          '<option value="">No tienes pedidos ENTREGADO aún</option>';
+        reviewProductSelect.disabled = true;
+        return;
+      }
+
+      reviewProductSelect.disabled = false;
+      reviewProductSelect.innerHTML =
+        '<option value="">Selecciona un producto entregado...</option>' +
+        lista.map(p =>
+          `<option value="${p.idProducto}">${p.nombre}</option>`
+        ).join('');
+    } catch (e) {
+      console.error(e);
+      alert('Error cargando productos para reseñar');
+    }
+  }
+
+  // ======= CRUD reseñas (solo visual) =======
   function toggleReviewFeatures(enabled) {
-    // agrega/quita la clase 'editable' para mostrar acciones al pasar el mouse
     document.querySelectorAll('.reseña-card').forEach(card => {
       card.classList.toggle('editable', enabled);
     });
@@ -336,17 +393,21 @@ document.addEventListener('DOMContentLoaded', () => {
   toggleReviewFeatures(isLoggedIn);
 
   function attachReviewListeners(card) {
-    card.querySelector('.delete-btn').addEventListener('click', () => {
+    const delBtn = card.querySelector('.delete-btn');
+    const editBtn = card.querySelector('.edit-btn');
+    if (!delBtn || !editBtn) return;
+
+    delBtn.addEventListener('click', () => {
       if (!localStorage.getItem('token')) return alert('Debes iniciar sesión para eliminar.');
       if (confirm('¿Eliminar este comentario?')) card.remove();
     });
-    card.querySelector('.edit-btn').addEventListener('click', () => editReview(card));
+    editBtn.addEventListener('click', () => editReview(card));
   }
 
   function editReview(card) {
     if (!localStorage.getItem('token')) return alert('Debes iniciar sesión para editar.');
     const isEditing = card.classList.contains('editing');
-    const editBtn = card.querySelector('.edit-btn i');
+    const editIcon = card.querySelector('.edit-btn i');
 
     if (isEditing) {
       const textarea = card.querySelector('textarea');
@@ -366,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.querySelector('.rating-editor').replaceWith(ratingVisual);
 
       card.classList.remove('editing');
-      editBtn.className = 'fas fa-edit';
+      editIcon.className = 'fas fa-edit';
       alert('Comentario actualizado.');
     } else {
       const currentComment = card.querySelector('.comentario').textContent;
@@ -384,18 +445,17 @@ document.addEventListener('DOMContentLoaded', () => {
       renderStars(editor, currentRating);
 
       card.classList.add('editing');
-      editBtn.className = 'fas fa-save';
+      editIcon.className = 'fas fa-save';
     }
   }
 
-  // listeners iniciales de las tarjetas existentes
   document.querySelectorAll('.reseñas-grid .reseña-card').forEach(attachReviewListeners);
 
-  // inicializar estrellas del formulario
   renderStars(newReviewRatingContainer, 5);
+  cargarProductosParaResena();
 
-  // alta de nueva reseña
-  reviewForm.addEventListener('submit', (e) => {
+  // ======= ENVIAR NUEVA RESEÑA (GUARDA EN BD) =======
+  reviewForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!localStorage.getItem('token')) {
       alert('Debes iniciar sesión para publicar un comentario.');
@@ -403,34 +463,68 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    const idCliente = await window.ensureClienteId();
+    if (!idCliente) return;
+
+    const idProducto = reviewProductSelect.value;
     const name = document.getElementById('reviewName').value.trim();
     const comment = document.getElementById('reviewComment').value.trim();
     const rating = parseInt(newReviewRatingContainer.getAttribute('data-rating'));
-    if (!name || !comment) return alert('Completa nombre y comentario.');
 
-    const card = document.createElement('div');
-    card.className = 'reseña-card borde-azul editable';
-    card.setAttribute('data-id', Date.now().toString());
-    card.innerHTML = `
-      <div class="perfil"><i class="fas fa-user-circle"></i><span class="nombre">${name}</span></div>
-      <div class="rating" data-rating="${rating}">${generateStarsHtml(rating)}</div>
-      <p class="comentario">${comment}</p>
-      <div class="reseña-actions">
-        <button class="action-btn edit-btn" title="Editar"><i class="fas fa-edit"></i></button>
-        <button class="action-btn delete-btn" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-      </div>`;
-    reseñasGrid.prepend(card);
-    attachReviewListeners(card);
+    if (!idProducto) { alert('Selecciona un producto entregado.'); return; }
+    if (!name || !comment) { alert('Completa nombre y comentario.'); return; }
 
-    reviewForm.reset();
-    renderStars(newReviewRatingContainer, 5);
-    alert('¡Gracias! Tu reseña se añadió.');
+    try {
+      const body = {
+        idCliente,
+        idProducto: Number(idProducto),
+        puntuacion: rating,
+        comentario: comment
+      };
+
+      const resp = await authFetch('/api/resenas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok || data.ok === false) {
+        alert(data.message || 'No se pudo guardar tu reseña');
+        return;
+      }
+
+      const card = document.createElement('div');
+      card.className = 'reseña-card borde-azul editable';
+      card.setAttribute('data-id', Date.now().toString());
+      card.innerHTML = `
+        <div class="perfil"><i class="fas fa-user-circle"></i>
+          <span class="nombre">${name}</span>
+        </div>
+        <div class="rating" data-rating="${rating}">
+          ${generateStarsHtml(rating)}
+        </div>
+        <p class="comentario">${comment}</p>
+        <div class="reseña-actions">
+          <button class="action-btn edit-btn" title="Editar"><i class="fas fa-edit"></i></button>
+          <button class="action-btn delete-btn" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+        </div>`;
+      reseñasGrid.prepend(card);
+      attachReviewListeners(card);
+
+      reviewForm.reset();
+      renderStars(newReviewRatingContainer, 5);
+      alert('¡Gracias! Tu reseña se guardó correctamente.');
+    } catch (err) {
+      console.error(err);
+      alert('Error enviando la reseña.');
+    }
   });
 });
 </script>
 
 <script>
-// ==== BUSCADOR GLOBAL CON SUGERENCIAS ====
+/* ==== BUSCADOR GLOBAL CON SUGERENCIAS ==== */
 (function(){
   const searchContainer = document.querySelector('.search-container');
   if (!searchContainer) return;
@@ -438,12 +532,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const input = searchContainer.querySelector('input');
   if (!input) return;
 
-  // Caja de sugerencias
   const box = document.createElement('div');
   box.className = 'search-suggestions';
   searchContainer.appendChild(box);
 
-  let allProducts = null;   // caché en memoria
+  let allProducts = null;
   let loading = false;
 
   async function loadProducts() {
@@ -470,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const desc   = (p.descripcion || '').toLowerCase();
         return nombre.includes(term) || desc.includes(term);
       })
-      .slice(0, 5); // máximo 5 sugerencias
+      .slice(0, 5);
   }
 
   function mostrarSugerencias(lista, q) {
@@ -498,7 +591,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function irACatalogo(termino) {
     const url = '/catalogo.html?q=' + encodeURIComponent(termino);
 
-    // Si ya estamos en catálogo, intentar filtrar sin recargar
     if (location.pathname.endsWith('/catalogo.html') &&
         typeof window.aplicarBusquedaCatalogo === 'function') {
       history.replaceState(null, '', url);
@@ -508,7 +600,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Eventos
   input.addEventListener('input', async () => {
     const value = input.value.trim();
     if (!value) {
@@ -538,7 +629,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Cerrar sugerencias al hacer clic fuera
   document.addEventListener('click', (e) => {
     if (!searchContainer.contains(e.target)) {
       box.style.display = 'none';
@@ -546,6 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 })();
 </script>
+
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
   const toggleBtn = document.getElementById('chatbotToggle');
@@ -555,7 +646,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const input     = document.getElementById('chatbotText');
   const messages  = document.getElementById('chatbotMessages');
 
-  // ====== 1) Abrir / cerrar ======
   function openChat() {
     widget.classList.remove('hidden');
     input.focus();
@@ -570,7 +660,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   closeBtn.addEventListener('click', closeChat);
 
-  // ====== 2) Utilidades de mensajes ======
   function addMessage(text, from = 'bot') {
     const div = document.createElement('div');
     div.className = `chatbot-msg ${from}`;
@@ -579,22 +668,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     messages.scrollTop = messages.scrollHeight;
   }
 
-  // ====== 3) Cargar productos desde tu backend ======
   let productosCache = [];
-  let ultimasSugerencias = []; // para luego poder "agrega el 1"
+  let ultimasSugerencias = [];
 
   async function cargarProductos() {
     try {
       const r = await fetch('/api/productos');
       if (!r.ok) throw new Error('Error al cargar productos');
-      productosCache = await r.json(); // se espera algo tipo [{idProducto,nombre,precio,imagenUrl,stock},...]
+      productosCache = await r.json();
     } catch (err) {
       console.error(err);
       productosCache = [];
     }
   }
 
-  // normalizar texto (minúsculas, sin tildes)
   function normalizar(str) {
     return (str || '')
       .toLowerCase()
@@ -602,7 +689,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       .replace(/[\u0300-\u036f]/g, '');
   }
 
-  // buscar productos por texto usando coincidencias simples (pseudo-IA)
   function buscarProductosPorTexto(texto) {
     if (!productosCache.length) return [];
     const q = normalizar(texto);
@@ -613,8 +699,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       let score = 0;
 
       tokens.forEach(t => {
-        if (base.includes(t)) score += 2;          // coincidencia normal
-        if (base.startsWith(t)) score += 1;        // parecido al comienzo
+        if (base.includes(t)) score += 2;
+        if (base.startsWith(t)) score += 1;
       });
 
       if (q.includes('torta') || q.includes('pastel')) {
@@ -629,11 +715,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     return resultados
       .filter(r => r.score > 0)
       .sort((a,b) => b.score - a.score)
-      .slice(0, 3)              // top 3 sugerencias
+      .slice(0, 3)
       .map(r => r.prod);
   }
 
-  // ====== 4) Intentar agregar producto por índice (1,2,3) ======
   function intentarAgregarPorIndice(texto) {
     if (!ultimasSugerencias.length) return false;
     const t = normalizar(texto);
@@ -655,38 +740,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     return true;
   }
 
-  // ====== 5) Lógica principal de respuesta "inteligente" ======
   function generarRespuesta(textoOriginal) {
     const t = normalizar(textoOriginal);
 
-    // saludos
     if (/hola|buenas|hey|holaa/.test(t)) {
       return '¡Hola! Soy Artia Bot 🤖🍰. Puedo ayudarte con productos, recomendaciones y delivery.';
     }
 
-    // horario
     if (t.includes('horario') || t.includes('hora') || t.includes('abren') || t.includes('cierran')) {
       return '🕐 Atendemos de lunes a sábado de 9:00 am a 9:00 pm y domingos de 10:00 am a 7:00 pm.';
     }
 
-    // delivery
     if (t.includes('delivery') || t.includes('envio') || t.includes('enviar')) {
       return '🚚 Hacemos delivery en Ica. El tiempo aproximado es de 40 a 60 minutos según la zona.';
     }
 
-    // ubicación
     if (t.includes('donde estan') || t.includes('direccion') || t.includes('ubicacion') || t.includes('ubicación')) {
       return '📍 Estamos en Av. Lima 123 – Ica (referencia: a media cuadra del parque principal).';
     }
 
-    // intento de "agrega el 1 / el segundo / el tercero" al carrito
     if (/agrega|añade|pon en el carrito|agregalo|agrégalo|lo quiero|lo compro/.test(t)) {
       const ok = intentarAgregarPorIndice(t);
-      if (ok) return null; // ya respondimos dentro de la función
-      // si no se pudo por índice, sigue con recomendación normal
+      if (ok) return null;
     }
 
-    // búsqueda de productos según lo que escribe
     const sugerencias = buscarProductosPorTexto(textoOriginal);
     if (sugerencias.length) {
       ultimasSugerencias = sugerencias;
@@ -700,20 +777,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       return msg;
     }
 
-    // preguntas de precios generales
     if (t.includes('precio') || t.includes('cuanto cuesta') || t.includes('cuánto cuesta')) {
       return 'Dime qué producto te interesa (por ejemplo: "precio de la torta de chocolate") y te muestro opciones con sus precios.';
     }
 
-    // fallback
     return '😊 Soy Artia Bot. Puedo recomendarte tortas, postres, cafés, explicarte nuestro delivery u horario. Pregúntame algo como "recomiéndame una torta de chocolate para 10 personas".';
   }
 
-  // ====== 6) Carga inicial ======
   await cargarProductos();
   addMessage('¡Hola! Soy Artia Bot 🤖🍰 ¿En qué te ayudo hoy?');
 
-  // ====== 7) Enviar mensaje ======
   form.addEventListener('submit', e => {
     e.preventDefault();
     const text = input.value.trim();
@@ -725,10 +798,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     setTimeout(() => {
       const resp = generarRespuesta(text);
       if (resp) addMessage(resp, 'bot');
-      // si resp es null, fue porque ya se mandó mensaje dentro de intentarAgregarPorIndice
     }, 350);
   });
-
 });
 </script>
 

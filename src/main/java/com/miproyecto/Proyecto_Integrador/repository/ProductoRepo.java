@@ -33,4 +33,27 @@ public interface ProductoRepo extends JpaRepository<Producto, Long> {
  @Lock(LockModeType.PESSIMISTIC_WRITE)
 @Query("select p from Producto p where p.idProducto = :id")
 Optional<Producto> findByIdForUpdate(Long id);
+
+
+
+    @Query("""
+        select distinct p
+        from Producto p
+        where p.idProducto in (
+            select d.idProducto
+            from PedidoDetalle d
+            where d.pedido.idCliente = :clienteId
+              and d.pedido.estado = :estado
+        )
+    """)
+    List<Producto> findProductosEntregadosDeCliente(
+            @Param("clienteId") Long clienteId,
+            @Param("estado") String estado
+    );
+
+
+
+
+
+
 }

@@ -39,6 +39,8 @@ public class SecurityConfig {
           "/eventos.html","/contacto.html","/foro.html","/reseñas.html","/puntos.html").permitAll()
         .requestMatchers("/css/**","/favicon.ico","/js/**","/img/**","/fonts/**","/files/**").permitAll()
         .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/clientes/register", "/api/contactos").permitAll()
+              .requestMatchers("/api/foro/**").authenticated()
+
         .requestMatchers(HttpMethod.GET , "/api/debug/**", "/api/productos/**").permitAll()
         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 

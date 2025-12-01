@@ -31,4 +31,10 @@ public class ClienteService {
 
         return repo.save(c);
     }
+    public Long obtenerIdClienteLogueado() {
+    // ❗ Temporal: dejar fijo un idCliente existente en tu BD
+    return 1L;
+}
+
+    
 }

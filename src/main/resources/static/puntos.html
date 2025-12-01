@@ -218,154 +218,62 @@
   </form>
 </div>
 <script>
-/* ========= Sesión / Header unificado ========= */
+/* ========= Lógica Puntos REAL ========= */
 document.addEventListener('DOMContentLoaded', () => {
-  const token = localStorage.getItem('token');
-  const user  = localStorage.getItem('user');
+  // ... (tu código de sesión y nav se queda igual arriba)
 
-  const userBtn = document.getElementById('userBtn');
-  const userMenu = document.getElementById('userMenu');
-  const userName = document.getElementById('userName');
-  const loginLink = document.getElementById('loginLink');
-  const registerLink = document.getElementById('registerLink');
-  const logoutBtn = document.getElementById('logoutBtn');
-
-  if (token && user) {
-    if (userName) userName.textContent = user;
-    if (loginLink) loginLink.hidden = true;
-    if (registerLink) registerLink.hidden = true;
-    if (logoutBtn) logoutBtn.hidden = false;
-  } else {
-    if (logoutBtn) logoutBtn.hidden = true;
-  }
-
-  if (userBtn && userMenu) {
-    userBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      userMenu.toggleAttribute('hidden');
-    });
-    document.addEventListener('click', () => userMenu.setAttribute('hidden', ''));
-  }
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      localStorage.clear();
-      location.href = '/login.html';
-    });
-  }
-
-  // fetch autenticado común
-  window.authFetch = (url, opt = {}) => {
-    const t = localStorage.getItem('token');
-    const headers = { ...(opt.headers || {}) };
-    if (t) headers.Authorization = 'Bearer ' + t;
-    return fetch(url, { ...opt, headers });
-  };
-
-  /* ========= Menú y nav activo ========= */
-  const navLinks = document.querySelectorAll('.main-nav a');
-  navLinks.forEach(a => a.addEventListener('click', function(){
-    navLinks.forEach(n => n.classList.remove('active'));
-    this.classList.add('active');
-  }));
-  const hamburgerBtn = document.getElementById('hamburgerBtn');
-  const mainNav = document.getElementById('mainNav');
-  if (hamburgerBtn && mainNav) {
-    hamburgerBtn.addEventListener('click', () => mainNav.classList.toggle('show'));
-  }
-
-  /* ========= Lógica Puntos ========= */
-  const STORAGE_KEY = 'puntosHistorialArtia';
   const MIN_POINTS_FOR_CANJE = 100;
-  const POINTS_TO_REDEEM = 100;
 
-  function updatePointsAndNotifications() {
-    let historial = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!historial) {
-      historial = [
-        { fecha: '20/10/2025', detalle: 'Compra Tarta de Fresa', producto: 'Compra', puntos: 15, tipo: 'purchase' },
-        { fecha: '21/10/2025', detalle: 'Compra Café + Croissant', producto: 'Compra', puntos: 10, tipo: 'purchase' },
-        { fecha: '22/10/2025', detalle: 'Compra Torta de Chocolate', producto: 'Compra', puntos: 25, tipo: 'purchase' },
-        { fecha: '23/10/2025', detalle: 'Compra de 2 Capuchinos', producto: 'Compra', puntos: 10, tipo: 'purchase' },
-        { fecha: '24/10/2025', detalle: 'Compra Tarta de Arándanos', producto: 'Compra', puntos: 40, tipo: 'purchase' }
-      ];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(historial));
-    }
+  async function cargarPuntos() {
+    try {
+      const r = await authFetch('/api/puntos');
+      if (!r.ok) throw new Error('Error al cargar puntos');
 
-    const tbody = document.getElementById('history-table-body');
-    const currentPointsEl = document.getElementById('current-points-value');
-    const totalHistoryEl = document.getElementById('total-history-points');
-    const notificationBadge = document.getElementById('notification-badge');
-    const btnCanjearTabla = document.getElementById('btnCanjearPuntosTabla');
+      const data = await r.json();
+      const total = data.total || 0;
+      const historial = Array.isArray(data.historial) ? data.historial : [];
 
-    tbody.innerHTML = '';
-    let total = 0;
+      const tbody = document.getElementById('history-table-body');
+      const currentPointsEl = document.getElementById('current-points-value');
+      const totalHistoryEl = document.getElementById('total-history-points');
+      const btnCanjearTabla = document.getElementById('btnCanjearPuntosTabla');
 
-    historial.forEach(t => {
-      const gain = t.tipo === 'purchase';
-      const value = gain ? t.puntos : -Math.abs(t.puntos);
-      total += value;
+      tbody.innerHTML = '';
+      historial.forEach(t => {
+        const gain = t.tipo === 'GANADO';
+        const row = tbody.insertRow();
+        row.classList.add(gain ? 'purchase-row' : 'redeem-row');
+        row.innerHTML = `
+          <td>${t.fecha}</td>
+          <td>${t.detalle}</td>
+          <td class="${gain ? 'points-gain' : 'points-loss'}">
+            ${gain ? '+' : '-'} ${t.puntos} pts
+          </td>`;
+      });
 
-      const row = tbody.insertRow();
-      row.classList.add(gain ? 'purchase-row' : 'redeem-row');
-      row.innerHTML = `
-        <td>${t.fecha}: ${t.producto}</td>
-        <td>${t.detalle}</td>
-        <td class="${gain ? 'points-gain' : 'points-loss'}">
-          ${gain ? '+' : '-'} ${Math.abs(t.puntos)} pts
-        </td>`;
-    });
+      currentPointsEl.textContent = total;
+      totalHistoryEl.innerHTML = `**${total} pts**`;
 
-    currentPointsEl.textContent = total;
-    totalHistoryEl.innerHTML = `**${total} pts**`;
+      if (total >= MIN_POINTS_FOR_CANJE) {
+        btnCanjearTabla.disabled = false;
+      } else {
+        btnCanjearTabla.disabled = true;
+      }
 
-    if (total >= MIN_POINTS_FOR_CANJE) {
-      btnCanjearTabla.disabled = false;
-      btnCanjearTabla.textContent = `Canjear Puntos (${POINTS_TO_REDEEM} pts)`;
-      notificationBadge.style.display = 'inline-block';
-      notificationBadge.textContent = '¡Canje!';
-    } else {
-      btnCanjearTabla.disabled = true;
-      btnCanjearTabla.textContent = `Canjear Puntos (Necesitas ${MIN_POINTS_FOR_CANJE - total} más)`;
-      notificationBadge.style.display = 'none';
+    } catch (e) {
+      console.error(e);
     }
   }
 
-  function simulateRedeem(product, pointsLost) {
-    const fecha = new Date().toLocaleDateString('es-PE');
-    const item = { fecha, detalle: product, producto: 'Canje de puntos', puntos: pointsLost, tipo: 'redeem' };
-    const historial = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    historial.unshift(item);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(historial));
-  }
-
-  updatePointsAndNotifications();
+  cargarPuntos();
 
   const btnCanjearTabla = document.getElementById('btnCanjearPuntosTabla');
-  if (btnCanjearTabla) {
-    btnCanjearTabla.addEventListener('click', () => {
-      if (btnCanjearTabla.disabled) return;
-      const totalPoints = parseInt(document.getElementById('current-points-value').textContent);
-      if (totalPoints >= POINTS_TO_REDEEM) {
-        if (confirm(`¿Deseas canjear ${POINTS_TO_REDEEM} puntos por un producto/descuento Artia?`)) {
-          simulateRedeem('Canje de producto/descuento', POINTS_TO_REDEEM);
-          alert(`¡Canje exitoso! Se descontaron ${POINTS_TO_REDEEM} puntos.`);
-          updatePointsAndNotifications();
-        }
-      } else {
-        alert('Aún no tienes suficientes puntos para canjear.');
-      }
-    });
-  }
-
-  document.querySelectorAll('.btn-ver-mas, .btn-canjear-tabla').forEach(b => {
-    b.addEventListener('click', () => {
-      if (!b.disabled) {
-        b.classList.add('clicked');
-        setTimeout(() => b.classList.remove('clicked'), 300);
-      }
-    });
+  btnCanjearTabla.addEventListener('click', () => {
+    // por ahora solo redirige a la página de canje
+    window.location.href = '/canjear-puntos.html';
   });
 });
+
 </script>
 
 <script>
