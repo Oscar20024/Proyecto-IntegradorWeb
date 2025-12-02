@@ -65,9 +65,7 @@
     </div>
 
     <div class="header-icons">
-      <button class="icon-btn" aria-label="Notificaciones">
-        <span class="material-symbols-outlined">notifications</span>
-      </button>
+      
 
       <div class="user-wrap">
         <button id="userBtn" class="icon-btn" aria-label="Perfil">
@@ -106,7 +104,6 @@
       <li><a href="/contacto.html">Contacto</a></li>
       <li><a href="/reseñas.html">Reseñas</a></li>
       <li><a href="/foro.html">Foro</a></li>
-      <li><a href="/puntos.html">Puntos</a></li>
     </ul>
   </nav>
 </header>
@@ -440,6 +437,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const input     = document.getElementById('chatbotText');
   const messages  = document.getElementById('chatbotMessages');
 
+  // ========= Utils =========
+  function randomChoice(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
   // ====== 1) Abrir / cerrar ======
   function openChat() {
     widget.classList.remove('hidden');
@@ -532,10 +534,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const p = ultimasSugerencias[idx];
     if (typeof window.addToCart === 'function') {
-      window.addToCart(p.nombre, Number(p.precio), p.imagenUrl || '/img/placeholder.png', p.idProducto);
-      addMessage(`Listo, agregué “${p.nombre}” al carrito 🛒`, 'bot');
+      window.addToCart(
+        p.nombre,
+        Number(p.precio),
+        p.imagenUrl || '/img/placeholder.png',
+        p.idProducto
+      );
+      addMessage(
+        randomChoice([
+          `Listo, agregué “${p.nombre}” al carrito 🛒`,
+          `Hecho 😎 “${p.nombre}” ya está viajando a tu carrito.`,
+          `¡Boom! “${p.nombre}” acaba de aparecer en tu carrito mágicamente ✨🛒`
+        ]),
+        'bot'
+      );
     } else {
-      addMessage(`No encontré la función de carrito, pero te recomiendo “${p.nombre}”.`, 'bot');
+      addMessage(
+        randomChoice([
+          `No encontré la función de carrito, pero igual te recomiendo “${p.nombre}”.`,
+          `Ups, no pude ponerlo en el carrito, pero “${p.nombre}” es una joyita 💎.`,
+          `No tengo acceso al carrito, pero si fuera tú, me quedaba con “${p.nombre}” 😉.`
+        ]),
+        'bot'
+      );
     }
     return true;
   }
@@ -545,27 +566,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     const t = normalizar(textoOriginal);
 
     // saludos
-    if (/hola|buenas|hey|holaa/.test(t)) {
-      return '¡Hola! Soy Artia Bot 🤖🍰. Puedo ayudarte con productos, recomendaciones y delivery.';
+    if (/hola|buenas|hey|holaa|holi|buenos dias|buenos dias|buenas tardes|buenas noches/.test(t)) {
+      return randomChoice([
+        '¡Hola! Soy Artia Bot 🤖🍰. Vengo con tortas, café y sarcasmo ligero. ¿Qué se te antoja?',
+        '¡Buenas! Soy tu asistente pastelero digital. Dime qué quieres y vemos cómo endulzamos tu día 😏.',
+        'Hey, hola 👋 Soy Artia Bot. No puedo hornear, pero sí recomendar cosas ricas. ¿Qué se te antoja hoy?',
+        '¡Holaaa! 🤖✨ Si lo que buscas es azúcar y carbohidratos felices, estás en el chat correcto.'
+      ]);
     }
 
     // horario
     if (t.includes('horario') || t.includes('hora') || t.includes('abren') || t.includes('cierran')) {
-      return '🕐 Atendemos de lunes a sábado de 9:00 am a 9:00 pm y domingos de 10:00 am a 7:00 pm.';
+      return randomChoice([
+        '🕐 Atendemos de lunes a sábado de 9:00 am a 9:00 pm y domingos de 10:00 am a 7:00 pm. Sí, somos casi adictos al trabajo y al azúcar.',
+        'Nuestro horario dulce es: lun–sáb 9:00 am a 9:00 pm, dom 10:00 am a 7:00 pm. Ven antes de que el antojo te gane 😜.',
+        'Abrimos de lunes a sábado de 9:00 am a 9:00 pm y domingos de 10:00 am a 7:00 pm. Si vienes fuera de ese horario solo atiendo yo… pero por chat 😂.'
+      ]);
     }
 
     // delivery
-    if (t.includes('delivery') || t.includes('envio') || t.includes('enviar')) {
-      return '🚚 Hacemos delivery en Ica. El tiempo aproximado es de 40 a 60 minutos según la zona.';
+    if (t.includes('delivery') || t.includes('envio') || t.includes('envío') || t.includes('enviar')) {
+      return randomChoice([
+        '🚚 Hacemos delivery en Ica. Demoramos aprox. 40–60 min según la zona. Más rápido que decidir qué serie ver en Netflix.',
+        'Sí tenemos delivery 😎🚚. Ica, 40–60 minutos aprox. Tú solo espera, yo hago que la torta viaje hacia ti.',
+        'Claro, enviamos a domicilio por Ica. El delivery suele tardar de 40 a 60 min. Tiempo perfecto para elegir la película mientras llega el postre 😉.'
+      ]);
     }
 
     // ubicación
-    if (t.includes('donde estan') || t.includes('direccion') || t.includes('ubicacion') || t.includes('ubicación')) {
-      return '📍 Estamos en Av. Lima 123 – Ica (referencia: a media cuadra del parque principal).';
+    if (t.includes('donde estan') || t.includes('donde están') ||
+        t.includes('direccion') || t.includes('dirección') ||
+        t.includes('ubicacion') || t.includes('ubicación')) {
+      return randomChoice([
+        '📍 Estamos en Av. Lima 123 – Ica (a media cuadra del parque principal). Si hueles a café y torta, estás cerca.',
+        'Nos encuentras en Av. Lima 123 – Ica, cerquita del parque principal. Sigue el aroma a pan recién horneado 😋.',
+        'Ubicación secreta (pero no tanto): Av. Lima 123 – Ica, a media cuadra del parque principal. Prometo que vale la caminata.'
+      ]);
     }
 
     // intento de "agrega el 1 / el segundo / el tercero" al carrito
-    if (/agrega|añade|pon en el carrito|agregalo|agrégalo|lo quiero|lo compro/.test(t)) {
+    if (/agrega|añade|anade|pon en el carrito|agregalo|agrégalo|lo quiero|lo compro|metelo al carrito|mételo al carrito/.test(t)) {
       const ok = intentarAgregarPorIndice(t);
       if (ok) return null; // ya respondimos dentro de la función
       // si no se pudo por índice, sigue con recomendación normal
@@ -576,27 +616,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (sugerencias.length) {
       ultimasSugerencias = sugerencias;
 
-      let msg = 'Según lo que me dices, te podrían gustar:\n';
+      const encabezado = randomChoice([
+        'Según lo que me dices, te podrían gustar:',
+        'Ok, ya analicé tu antojo 👀 Mira estas opciones:',
+        'Basado en tu mensaje, mi radar pastelero recomienda:',
+        'Mi algoritmo ultra-secreto (y un poco gordito) sugiere:'
+      ]);
+
+      let msg = encabezado + '\n';
       sugerencias.forEach((p, i) => {
         msg += `\n${i+1}) ${p.nombre} – S/ ${Number(p.precio).toFixed(2)}`;
         if (p.descripcion) msg += `\n   ${p.descripcion}`;
       });
-      msg += '\n\nPuedes decirme: "agrega el 1", "agrega el segundo", etc. para ponerlo en el carrito. 🛒';
+
+      const cierre = randomChoice([
+        '\n\nSi quieres, dime: "agrega el 1", "agrega el segundo", etc. y lo pongo directo en tu carrito 🛒.',
+        '\n\nPara hacerlo oficial, solo di: "agrega el 1", "agrega el segundo" y yo lo mando a tu carrito 🛒.',
+        '\n\n¿Te decides por uno? Dime: "agrega el 1", "agrega el tercero", etc., y aparece en tu carrito como por arte de magia 🛒✨.'
+      ]);
+
+      msg += cierre;
       return msg;
     }
 
     // preguntas de precios generales
-    if (t.includes('precio') || t.includes('cuanto cuesta') || t.includes('cuánto cuesta')) {
-      return 'Dime qué producto te interesa (por ejemplo: "precio de la torta de chocolate") y te muestro opciones con sus precios.';
+    if (t.includes('precio') || t.includes('cuanto cuesta') || t.includes('cuánto cuesta') || t.includes('cuanto vale') || t.includes('cuánto vale')) {
+      return randomChoice([
+        'Dime qué producto te interesa (por ejemplo: "precio de la torta de chocolate") y te muestro opciones con sus precios. Soy como un menú, pero que responde 😌.',
+        'Pregúntame algo como "precio de la cheesecake" o "cuánto cuesta una torta de chocolate para 10 personas" y te doy los precios exactos 💸.',
+        'Estoy listo para hablar de números 💰. Solo dime qué producto quieres revisar y te doy los precios y opciones.'
+      ]);
     }
 
     // fallback
-    return '😊 Soy Artia Bot. Puedo recomendarte tortas, postres, cafés, explicarte nuestro delivery u horario. Pregúntame algo como "recomiéndame una torta de chocolate para 10 personas".';
+    return randomChoice([
+      '😊 Soy Artia Bot. Puedo recomendarte tortas, postres, cafés, delivery u horarios. Pregúntame algo como: "recomiéndame una torta de chocolate para 10 personas".',
+      'No estoy 100% seguro de lo que quieres, pero sé de postres, café y azúcar. Intenta algo como: "quiero una torta de chocolate" o "qué me recomiendas para un cumpleaños".',
+      'Mi cerebro digital se quedó pensando 🤔. Puedo ayudarte con recomendaciones, precios, delivery y horarios. Prueba preguntando: "recomiéndame una torta para 15 personas".',
+      'Mmm… no entendí del todo, pero no te preocupes, no eres tú, soy yo 😅. Pídeme recomendaciones de tortas, postres o cafés y te ayudo.'
+    ]);
   }
 
   // ====== 6) Carga inicial ======
   await cargarProductos();
-  addMessage('¡Hola! Soy Artia Bot 🤖🍰 ¿En qué te ayudo hoy?');
+  addMessage(
+    randomChoice([
+      '¡Hola! Soy Artia Bot 🤖🍰 ¿En qué te ayudo hoy?',
+      'Bienvenido a Artia Chat 🍰✨. Cuéntame tu antojo y vemos qué magia hacemos.',
+      'Hola, humano con hambre (supongo) 😄. Soy Artia Bot, pregúntame por tortas, cafés o delivery.',
+      '¡Hey! Soy el bot oficial de Artia. No muerdo, pero sí recomiendo cosas ricas. ¿Qué buscas hoy?'
+    ])
+  );
 
   // ====== 7) Enviar mensaje ======
   form.addEventListener('submit', e => {
@@ -616,6 +686,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 });
 </script>
+
 
 </body>
 </html>
